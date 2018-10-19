@@ -30,12 +30,14 @@ function! projector#ExecuteTargetRule(...)
     if a:0 < 1
         if exists("s:lastBuildCommand")
             echomsg "Executing last build command: ".s:lastBuildCommand
+            execute "make ".s:lastBuildCommand
         else
             echomsg "No build command defined."
         endif
     else
         echomsg "Executing: ".a:1
         let s:lastBuildCommand = a:1
+        execute "make ".s:lastBuildCommand
     endif
 endfunction
 
