@@ -1,12 +1,15 @@
+function! projector#GetMakefiles(path)
+    "get all makefiles in current directory as a list
+    let l:makefiles = globpath(a:path, "[Mm]akefile", v:false, v:true)
+    "remove all nonreadable makefiles from found makefiles (e.g. directories)
+    return filter(l:makefiles, "filereadable(v:val)")
+endfunction
 
 function! projector#GetMakeTargets(ArgumentLead,CmdLine,CursorPosition)
     "list of suggested completions
     let l:targetCompletions = []
 
-    "get all makefiles in current directory as a list
-    let l:makefiles = globpath(".", "[Mm]akefile", v:false, v:true)
-    "remove all nonreadable makefiles from found makefiles (e.g. directories)
-    let l:makefiles = filter(l:makefiles, "filereadable(v:val)")
+    let l:makefiles = projector#GetMakefiles(".")
 
     if empty(l:makefiles)
         echomsg "No makefile found. Cannot complete targets."
