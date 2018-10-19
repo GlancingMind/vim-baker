@@ -1,7 +1,8 @@
 function! projector#GetMakefiles(path)
     "get all makefiles in current directory as a list
     let l:makefiles = globpath(a:path, "[Mm]akefile", v:false, v:true)
-    "remove all nonreadable makefiles from found makefiles (e.g. directories)
+    "remove all nonreadable files from matching files
+    "e.g. a directory named 'makefile'
     return filter(l:makefiles, "filereadable(v:val)")
 endfunction
 
