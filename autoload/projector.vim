@@ -14,10 +14,20 @@ function! projector#GetMakeTargets(ArgumentLead,CmdLine,CursorPosition)
 
     if empty(l:makefiles)
         echomsg "No makefile found. Cannot complete targets."
+        return l:targetCompletions
+    endif
+
+    if len(l:makefiles) > 1
+        let l:msg =  "Multiple makefiles found ".string(l:makefiles)
+        "remove all makefiles starting with a 'm'
+        "this ensures compliance to the make console command, which searches
+        "for makefiles in order: GNUmakefile, makefile, Makefile
+        let l:makefiles = filter(l:makefiles, "v:val =~# '^./m'")
+        echomsg l:msg." Completing targets from: ".l:makefiles[0]
     endif
 
     "grep targets from all makefiles
-    execute 'silent! vimgrep /^.*:/gj'.join(l:makefiles)
+    execute 'silent! vimgrep /^.*:/gj'.l:makefiles[0]
     "get found target entries from quickfixlist
     for l:item in filter(getqflist(), "v:val.text =~ \"^".a:ArgumentLead."\"")
         "strip trailing : from target name
@@ -34,14 +44,16 @@ function! projector#ExecuteTargetRule(...)
     if a:0 < 1
         if exists("s:lastBuildCommand")
             echomsg "Executing last build command: ".s:lastBuildCommand
-            execute "make ".s:lastBuildCommand
+            execute "silent! make ".s:lastBuildCommand
+            redraw!
         else
             echomsg "No build command defined."
         endif
     else
         echomsg "Executing: ".a:1
         let s:lastBuildCommand = a:1
-        execute "make ".s:lastBuildCommand
+        execute "silent! make ".s:lastBuildCommand
+        redraw!
     endif
 endfunction
 
