@@ -1,4 +1,4 @@
-function! projector#GetMakefiles(path)
+function! baker#GetMakefiles(path)
     "get all makefiles in current directory as a list
     let l:makefiles = globpath(a:path, "[Mm]akefile", v:false, v:true)
     "remove all nonreadable files from matching files
@@ -6,11 +6,11 @@ function! projector#GetMakefiles(path)
     return filter(l:makefiles, "filereadable(v:val)")
 endfunction
 
-function! projector#GetMakeTargets(ArgumentLead,CmdLine,CursorPosition)
+function! baker#GetMakeTargets(ArgumentLead,CmdLine,CursorPosition)
     "list of suggested completions
     let l:targetCompletions = []
 
-    let l:makefiles = projector#GetMakefiles(".")
+    let l:makefiles = baker#GetMakefiles(".")
 
     if empty(l:makefiles)
         echomsg "No makefile found. Cannot complete targets."
@@ -39,7 +39,7 @@ function! projector#GetMakeTargets(ArgumentLead,CmdLine,CursorPosition)
     return l:targetCompletions
 endfunction
 
-function! projector#ExecuteTargetRule(...)
+function! baker#ExecuteTargetRule(...)
     "check if a target was specified by user
     if a:0 < 1
         if exists("s:lastBuildCommand")
