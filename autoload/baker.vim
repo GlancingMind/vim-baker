@@ -1,7 +1,9 @@
 function! baker#GetMakefiles(path)
     "get all makefiles in current directory as a list
-    let l:makefiles = globpath(a:path, "[Mm]akefile", v:false, v:true)
-    let l:makefiles += globpath(a:path, "GNUmakefile", v:false, v:true)
+    "and preserve the makefile order: GNUmakefile, makefile, Makefile
+    let l:makefiles = globpath(a:path, "GNUmakefile", v:false, v:true)
+    let l:makefiles += globpath(a:path, "makefile", v:false, v:true)
+    let l:makefiles += globpath(a:path, "Makefile", v:false, v:true)
 
     "remove all nonreadable files from matching files
     "e.g. a directory named 'makefile'
@@ -25,22 +27,6 @@ function! baker#GetTargetList(makefile)
     return l:targets
 endfunction
 
-function! baker#SortMakefiles(targets)
-    let l:sortedMakefiles = []
-
-    if -1 != index(a:targets, './GNUmakefile')
-        let l:sortedMakefiles = add(l:sortedMakefiles, './GNUmakefile')
-    endif
-    if -1 != index(a:targets, './makefile')
-        let l:sortedMakefiles = add(l:sortedMakefiles, './makefile')
-    endif
-    if -1 != index(a:targets, './Makefile')
-        let l:sortedMakefiles = add(l:sortedMakefiles, './Makefile')
-    endif
-
-    return l:sortedMakefiles
-endfunction
-
 function! baker#GetMakeTargets(ArgumentLead,CmdLine,CursorPosition)
     "list of suggested completions
     let l:targetCompletions = []
@@ -49,28 +35,24 @@ function! baker#GetMakeTargets(ArgumentLead,CmdLine,CursorPosition)
     let l:makefiles = baker#GetMakefiles(".")
 
     if empty(l:makefiles)
-        echomsg "No makefile found. Cannot complete targets."
+        echomsg 'No makefile found. Cannot complete targets.'
         return l:targetCompletions
     endif
 
     if len(l:makefiles) > 1
-        "remove all makefiles starting with a 'm'
-        "this ensures compliance to the make console command, which searches
-        "for makefiles in order: GNUmakefile, makefile, Makefile
-        let l:makefiles = baker#SortMakefiles(l:makefiles)
-        let l:msg =  "Multiple makefiles found ".string(l:makefiles)
-        echomsg l:msg." Completing targets from: ".l:makefiles[0]
+        echomsg  'Multiple makefiles found '.string(l:makefiles)
+            \.'. Completing targets from: '.l:makefiles[0]
     endif
 
     let l:targets = baker#GetTargetList(l:makefiles[0])
     if empty(l:targets)
-        echomsg "No targets defined"
+        echomsg 'No targets defined'
         return l:targetCompletions
     endif
     "remove all targets that don't match users given argument
     let l:targetCompletions = filter(l:targets, "v:val =~ \"^".a:ArgumentLead."\"")
     if empty(l:targetCompletions)
-        echomsg "No matching targets found"
+        echomsg 'No matching targets found'
         return l:targetCompletions
     endif
 
@@ -81,14 +63,14 @@ function! baker#ExecuteTargetRule(...)
     "check if a target was specified by user
     if a:0 < 1
         if exists("s:lastBuildCommand")
-            echomsg "Executing last build command: ".s:lastBuildCommand
+            echomsg 'Executing last build command: '.s:lastBuildCommand
             execute "silent! make ".s:lastBuildCommand
             redraw!
         else
-            echomsg "No build command defined."
+            echomsg 'No build command defined.'
         endif
     else
-        echomsg "Executing: ".a:1
+        echomsg 'Executing: '.a:1
         let s:lastBuildCommand = a:1
         execute "silent! make ".s:lastBuildCommand
         redraw!
