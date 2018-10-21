@@ -8,10 +8,28 @@ function! baker#GetMakefiles(path)
     return filter(l:makefiles, "filereadable(v:val)")
 endfunction
 
+function! baker#GetTargetList(makefile)
+    "list of targets in makefile
+    let l:targets = []
+
+    "grep all targets from makefiles
+    execute 'silent! vimgrep /^.*:/gj'.a:makefile
+    "get found target entries from quickfixlist
+    for l:item in getqflist()
+        "take text of qfentry and strip the trailing : from target name
+        let l:striped = strcharpart(l:item.text, 0, strlen(l:item.text)-1)
+        "add target to completionlist
+        let l:targets = add(l:targets, l:striped)
+    endfor
+
+    return l:targets
+endfunction
+
 function! baker#GetMakeTargets(ArgumentLead,CmdLine,CursorPosition)
     "list of suggested completions
     let l:targetCompletions = []
 
+    "makefiles of current directory
     let l:makefiles = baker#GetMakefiles(".")
 
     if empty(l:makefiles)
@@ -28,15 +46,9 @@ function! baker#GetMakeTargets(ArgumentLead,CmdLine,CursorPosition)
         echomsg l:msg." Completing targets from: ".l:makefiles[0]
     endif
 
-    "grep targets from all makefiles
-    execute 'silent! vimgrep /^.*:/gj'.l:makefiles[0]
-    "get found target entries from quickfixlist
-    for l:item in filter(getqflist(), "v:val.text =~ \"^".a:ArgumentLead."\"")
-        "strip trailing : from target name
-        let l:striped = strcharpart(l:item.text, 0, strlen(l:item.text)-1)
-        "add target to completionlist
-        let l:targetCompletions = add(l:targetCompletions, l:striped)
-    endfor
+    let l:targets = baker#GetTargetList(l:makefiles[0])
+    "remove all targets that don't match users given argument
+    let l:targetCompletions = filter(l:targets, "v:val =~ \"^".a:ArgumentLead."\"")
 
     return l:targetCompletions
 endfunction
