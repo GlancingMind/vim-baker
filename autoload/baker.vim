@@ -25,6 +25,22 @@ function! baker#GetTargetList(makefile)
     return l:targets
 endfunction
 
+function! baker#SortMakefiles(targets)
+    let l:sortedMakefiles = []
+
+    if -1 != index(a:targets, './GNUmakefile')
+        let l:sortedMakefiles = add(l:sortedMakefiles, './GNUmakefile')
+    endif
+    if -1 != index(a:targets, './makefile')
+        let l:sortedMakefiles = add(l:sortedMakefiles, './makefile')
+    endif
+    if -1 != index(a:targets, './Makefile')
+        let l:sortedMakefiles = add(l:sortedMakefiles, './Makefile')
+    endif
+
+    return l:sortedMakefiles
+endfunction
+
 function! baker#GetMakeTargets(ArgumentLead,CmdLine,CursorPosition)
     "list of suggested completions
     let l:targetCompletions = []
@@ -38,17 +54,25 @@ function! baker#GetMakeTargets(ArgumentLead,CmdLine,CursorPosition)
     endif
 
     if len(l:makefiles) > 1
-        let l:msg =  "Multiple makefiles found ".string(l:makefiles)
         "remove all makefiles starting with a 'm'
         "this ensures compliance to the make console command, which searches
         "for makefiles in order: GNUmakefile, makefile, Makefile
-        let l:makefiles = filter(l:makefiles, "v:val =~# '^./m'")
+        let l:makefiles = baker#SortMakefiles(l:makefiles)
+        let l:msg =  "Multiple makefiles found ".string(l:makefiles)
         echomsg l:msg." Completing targets from: ".l:makefiles[0]
     endif
 
     let l:targets = baker#GetTargetList(l:makefiles[0])
+    if empty(l:targets)
+        echomsg "No targets defined"
+        return l:targetCompletions
+    endif
     "remove all targets that don't match users given argument
     let l:targetCompletions = filter(l:targets, "v:val =~ \"^".a:ArgumentLead."\"")
+    if empty(l:targetCompletions)
+        echomsg "No matching targets found"
+        return l:targetCompletions
+    endif
 
     return l:targetCompletions
 endfunction
