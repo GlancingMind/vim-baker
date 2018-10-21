@@ -1,6 +1,8 @@
 function! baker#GetMakefiles(path)
     "get all makefiles in current directory as a list
     let l:makefiles = globpath(a:path, "[Mm]akefile", v:false, v:true)
+    let l:makefiles += globpath(a:path, "GNUmakefile", v:false, v:true)
+
     "remove all nonreadable files from matching files
     "e.g. a directory named 'makefile'
     return filter(l:makefiles, "filereadable(v:val)")
