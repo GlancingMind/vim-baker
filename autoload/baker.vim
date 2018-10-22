@@ -77,3 +77,25 @@ function! baker#ExecuteTargetRule(...)
     endif
 endfunction
 
+function! baker#ListTargets()
+    "get makefiles of current directory
+    let l:makefiles = baker#GetMakefiles(".")
+
+    if empty(l:makefiles)
+        echomsg 'No makefile found. Cannot complete targets.'
+        return
+    endif
+
+    let l:index = 0
+    let l:targetlist = ""
+    for l:makefile in l:makefiles
+		let l:targetlist .= l:makefile."\n"
+        let l:targets = baker#GetTargetList(l:makefile)
+		for l:target in l:targets
+			let l:targetlist .= printf("%2d:\t%s\n", l:index, l:target)
+			let l:index += 1
+		endfor
+    endfor
+
+    echo l:targetlist
+endfunction
