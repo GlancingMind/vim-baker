@@ -27,7 +27,7 @@ function! baker#GetTargetList(makefile)
     return l:targets
 endfunction
 
-function! baker#GetMakeTargets(ArgumentLead,CmdLine,CursorPosition)
+function! baker#CompleteMakeTargets(ArgumentLead, CmdLine, CursorPosition)
     "list of suggested completions
     let l:targetCompletions = []
 
