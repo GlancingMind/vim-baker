@@ -12,7 +12,7 @@ endfunction
 
 function! baker#IndexMakefiles(path, ignoreCache)
     if has_key(s:makefilesCache, a:path) && !a:ignoreCache
-        echo "cache hit makefiles index"
+        "echo 'cache hit makefiles index'
         return s:makefilesCache[a:path]
     endif
 
@@ -27,7 +27,7 @@ endfunction
 
 function! baker#GetMakefiles(path, ignoreCache)
     if has_key(s:makefilesCache, a:path) && !a:ignoreCache
-        echo "cache hit makefiles"
+        "echo 'cache hit for makefiles in "'.a:path.'"'
         return keys(s:makefilesCache[a:path])
     endif
 
@@ -52,7 +52,7 @@ function! baker#GetTargets(makefile)
     let l:filename = fnamemodify(a:makefile, ":t")
     if has_key(s:makefilesCache, l:path)
         if has_key(s:makefilesCache[l:path], l:filename)
-            echo "cache hit targets"
+            "echo 'cache hit for targets of "'.a:makefile.'"'
             return s:makefilesCache[l:path][l:filename]
         endif
     endif
@@ -120,25 +120,23 @@ function! baker#ExecuteTargetRule(...)
     endif
 endfunction
 
-function! baker#ListTargets()
-    "get makefiles of current directory
-    let l:makefiles = baker#GetMakefiles(expand("%:h"), v:false)
+function! baker#ListTargets(path)
 
-    if empty(l:makefiles)
-        echomsg 'No makefile found. Cannot display targets.'
-        return
+    if isdirectory(a:path)
+        "get makefiles of current directory
+        for l:makefile in baker#GetMakefiles(a:path, v:false)
+            call baker#ListTargets(a:path.'/'.l:makefile)
+        endfor
     endif
 
-    let l:index = 0
-    let l:targetlist = ""
-    for l:makefile in l:makefiles
-		let l:targetlist .= l:makefile."\n"
-        let l:targets = baker#GetTargets(expand("%:h").'/'.l:makefile)
-		for l:target in l:targets
-			let l:targetlist .= printf("%2d:\t%s\n", l:index, l:target)
-			let l:index += 1
-		endfor
-    endfor
-
-    echo l:targetlist
+    "when path points to a potential makefile
+    if filereadable(a:path)
+        "all filename of makefile to output
+        let l:index = 0
+        echo fnamemodify(a:path, ":t")."\n"
+        for l:target in baker#GetTargets(a:path)
+            echo printf("%2d:\t%s", l:index, l:target)
+            let l:index += 1
+        endfor
+    endif
 endfunction
