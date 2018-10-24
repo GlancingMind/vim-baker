@@ -17,7 +17,7 @@ function! baker#IndexMakefiles(path, ignoreCache)
     endif
 
     for l:makefile in baker#GetMakefiles(a:path, a:ignoreCache)
-        let l:targets = baker#GetTargetList(expand("%:h").'/'.l:makefile)
+        let l:targets = baker#GetTargets(expand("%:h").'/'.l:makefile)
         let l:makefileName = fnamemodify(l:makefile, ":t")
         let l:newCacheEntry = {l:makefileName: l:targets}
         let l:oldCacheentry = get(s:makefilesCache, a:path, {})
@@ -44,7 +44,7 @@ function! baker#GetMakefiles(path, ignoreCache)
     return map(l:makefiles, 'fnamemodify(v:val, ":t")')
 endfunction
 
-function! baker#GetTargetList(makefile)
+function! baker#GetTargets(makefile)
     "list of targets in makefile
     let l:targets = []
 
@@ -87,7 +87,7 @@ function! baker#CompleteMakeTargets(ArgumentLead, CmdLine, CursorPosition)
             \.'. Completing targets from: '.l:makefiles[0]
     endif
 
-    let l:targets = baker#GetTargetList(expand("%:h").'/'.l:makefiles[0])
+    let l:targets = baker#GetTargets(expand("%:h").'/'.l:makefiles[0])
     if empty(l:targets)
         echomsg 'No targets defined'
         return l:targetCompletions
@@ -133,7 +133,7 @@ function! baker#ListTargets()
     let l:targetlist = ""
     for l:makefile in l:makefiles
 		let l:targetlist .= l:makefile."\n"
-        let l:targets = baker#GetTargetList(expand("%:h").'/'.l:makefile)
+        let l:targets = baker#GetTargets(expand("%:h").'/'.l:makefile)
 		for l:target in l:targets
 			let l:targetlist .= printf("%2d:\t%s\n", l:index, l:target)
 			let l:index += 1
