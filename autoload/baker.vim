@@ -140,3 +140,18 @@ function! baker#ListTargets(path)
         endfor
     endif
 endfunction
+
+function! baker#CompleteDirectoryOrMakefile(ArgumentLead, CmdLine, CursorPosition)
+
+    let l:path = "."
+    if !empty(a:ArgumentLead)
+        let l:path = a:ArgumentLead
+    endif
+
+    "add directories to list of suggested completions
+    let l:completions = globpath(l:path, "*/", v:false, v:true)
+    "add makefiles of current directory
+    let l:completions += map(baker#GetMakefiles(l:path, v:false), "a:ArgumentLead.v:val")
+    "remove all makefiles and directories that don't match users given argument
+    return filter(l:completions, "v:val =~ \"^".a:ArgumentLead."\"")
+endfunction
