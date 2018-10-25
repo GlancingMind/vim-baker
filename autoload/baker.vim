@@ -17,7 +17,7 @@ function! baker#IndexMakefiles(path, ignoreCache)
     endif
 
     for l:makefile in baker#GetMakefiles(a:path, a:ignoreCache)
-        let l:targets = baker#GetTargets(expand("%:h").'/'.l:makefile)
+        let l:targets = baker#GetTargets(l:makefile)
         let l:makefileName = fnamemodify(l:makefile, ":t")
         let l:newCacheEntry = {l:makefileName: l:targets}
         let l:oldCacheentry = get(s:makefilesCache, a:path, {})
@@ -25,23 +25,25 @@ function! baker#IndexMakefiles(path, ignoreCache)
     endfor
 endfunction
 
-function! baker#GetMakefiles(path, ignoreCache)
-    if has_key(s:makefilesCache, a:path) && !a:ignoreCache
-        "echo 'cache hit for makefiles in "'.a:path.'"'
-        return keys(s:makefilesCache[a:path])
+function! baker#GetMakefiles(...)
+    let l:path = get(a:, 1, ".")
+    let l:filenamemodifier = get(a:, 2, "")
+    let l:ignoreCache = get(a:, 3, v:false)
+
+    if has_key(s:makefilesCache, l:path) && !l:ignoreCache
+        "echo 'cache hit for makefiles in \"'.l:path.'"'
+        return keys(s:makefilesCache[l:path])
     endif
 
     "get all makefiles in current directory as a list
     "and preserve the makefile order: GNUmakefile, makefile, Makefile
-    let l:makefiles = globpath(a:path, "GNUmakefile", v:false, v:true)
-    let l:makefiles += globpath(a:path, "makefile", v:false, v:true)
-    let l:makefiles += globpath(a:path, "Makefile", v:false, v:true)
+    let l:makefiles = globpath(l:path, "GNUmakefile", v:false, v:true)
+    let l:makefiles += globpath(l:path, "makefile", v:false, v:true)
+    let l:makefiles += globpath(l:path, "Makefile", v:false, v:true)
 
     "remove all nonreadable files from matching files
     "e.g. a directory named 'makefile'
-    let l:makefiles = filter(l:makefiles, "filereadable(v:val)")
-    "return only the filenames of makefiles
-    return map(l:makefiles, 'fnamemodify(v:val, ":t")')
+    return = filter(l:makefiles, "filereadable(v:val)")
 endfunction
 
 function! baker#GetTargets(makefile)
@@ -75,7 +77,7 @@ function! baker#CompleteMakeTargets(ArgumentLead, CmdLine, CursorPosition)
     let l:targetCompletions = []
 
     "makefiles of current directory
-    let l:makefiles = baker#GetMakefiles(expand("%:h"), v:false)
+    let l:makefiles = baker#GetMakefiles(expand("%:h"))
 
     if empty(l:makefiles)
         echomsg 'No makefile found. Cannot complete targets.'
@@ -87,7 +89,7 @@ function! baker#CompleteMakeTargets(ArgumentLead, CmdLine, CursorPosition)
             \.'. Completing targets from: '.l:makefiles[0]
     endif
 
-    let l:targets = baker#GetTargets(expand("%:h").'/'.l:makefiles[0])
+    let l:targets = baker#GetTargets(l:makefiles[0])
     if empty(l:targets)
         echomsg 'No targets defined'
         return l:targetCompletions
@@ -124,7 +126,7 @@ function! baker#ListTargets(path)
 
     if isdirectory(a:path)
         "get makefiles of current directory
-        for l:makefile in baker#GetMakefiles(a:path, v:false)
+        for l:makefile in baker#GetMakefiles(a:path)
             call baker#ListTargets(a:path.'/'.l:makefile)
         endfor
     endif
@@ -151,7 +153,7 @@ function! baker#CompleteDirectoryOrMakefile(ArgumentLead, CmdLine, CursorPositio
     "add directories to list of suggested completions
     let l:completions = globpath(l:path, "*/", v:false, v:true)
     "add makefiles of current directory
-    let l:completions += map(baker#GetMakefiles(l:path, v:false), "a:ArgumentLead.v:val")
+    let l:completions += map(baker#GetMakefiles(l:path), "a:ArgumentLead.v:val")
     "remove all makefiles and directories that don't match users given argument
     return filter(l:completions, "v:val =~ \"^".a:ArgumentLead."\"")
 endfunction
