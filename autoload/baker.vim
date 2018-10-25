@@ -1,14 +1,17 @@
+if !exists("s:makefileNames")
+    let s:makefileNames = ['GNUmakefile', 'makefile', 'Makefile']
+endif
+
 function! baker#GetMakefiles(...)
     let l:path = get(a:, 1, ".")
-    let l:fnamemodifier = get(a:, 2, "")
 
     let l:makefiles = makefilecache#GetMakefileNamesByPath(l:path)
     if empty(l:makefiles)
         "get all makefiles in current directory as a list
         "and preserve the makefile order: GNUmakefile, makefile, Makefile
-        let l:makefiles = globpath(l:path, "GNUmakefile", v:false, v:true)
-        let l:makefiles += globpath(l:path, "makefile", v:false, v:true)
-        let l:makefiles += globpath(l:path, "Makefile", v:false, v:true)
+        for l:makefile in s:makefileNames
+            let l:makefiles += globpath(l:path, l:makefile, v:false, v:true)
+        endfor
 
         "remove all nonreadable files from matching files
         "e.g. a directory named 'makefile'
@@ -16,7 +19,7 @@ function! baker#GetMakefiles(...)
         call map(copy(l:makefiles), "makefile#Parse(v:val)")
     endif
 
-    return map(l:makefiles, "fnamemodify(v:val, l:fnamemodifier)")
+    return l:makefiles
 endfunction
 
 function! baker#GetTargets(makefile)
