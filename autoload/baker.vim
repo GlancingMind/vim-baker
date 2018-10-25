@@ -1,5 +1,6 @@
 function! baker#GetMakefiles(...)
     let l:path = get(a:, 1, ".")
+    let l:fnamemodifier = get(a:, 2, "")
 
     let l:makefiles = makefilecache#GetMakefileNamesByPath(l:path)
     if empty(l:makefiles)
@@ -8,11 +9,14 @@ function! baker#GetMakefiles(...)
         let l:makefiles = globpath(l:path, "GNUmakefile", v:false, v:true)
         let l:makefiles += globpath(l:path, "makefile", v:false, v:true)
         let l:makefiles += globpath(l:path, "Makefile", v:false, v:true)
+
+        "remove all nonreadable files from matching files
+        "e.g. a directory named 'makefile'
+        let l:makefiles = filter(l:makefiles, "filereadable(v:val)")
+        call map(copy(l:makefiles), "makefile#Parse(v:val)")
     endif
 
-    "remove all nonreadable files from matching files
-    "e.g. a directory named 'makefile'
-    return filter(l:makefiles, "filereadable(v:val)")
+    return map(l:makefiles, "fnamemodify(v:val, l:fnamemodifier)")
 endfunction
 
 function! baker#GetTargets(makefile)
@@ -32,15 +36,19 @@ function! baker#CompleteMakeTargets(ArgumentLead, CmdLine, CursorPosition)
     endif
 
     if len(l:makefiles) > 1
-        echomsg  'Multiple makefiles found '.string(l:makefiles)
-            \.'. Completing targets from: '.l:makefiles[0]
+        "get filename of makefile by removing the path
+        let l:filenames = map(copy(l:makefiles), 'fnamemodify(v:val, ":t")')
+        echo 'Multiple makefiles found '.string(l:filenames)
+                    \.' in '.fnamemodify(l:makefiles[0], ":h").'/'
+                    \.' Completing targets from: '.l:filenames[0]
     endif
 
     let l:targets = baker#GetTargets(l:makefiles[0])
     if empty(l:targets)
-        echomsg 'No targets defined'
+        echomsg 'No targets for '.string(l:makefiles[0]).' defined'
         return l:targetCompletions
     endif
+
     "remove all targets that don't match users given argument
     let l:targetCompletions = filter(l:targets, "v:val =~ \"^".a:ArgumentLead."\"")
     if empty(l:targetCompletions)
