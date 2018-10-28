@@ -33,11 +33,11 @@ function! makefile#ParseTargets(path)
     let l:targets = []
 
     "grep all targets from makefiles
-    execute 'silent! vimgrep /^.*:/gj '.a:path
+    execute 'silent! vimgrep /^\w\+:/gj '.a:path
     "get found target entries from quickfixlist
     for l:item in getqflist()
-        "take text of qfentry and strip the trailing : from target name
-        let l:striped = strcharpart(l:item.text, 0, strlen(l:item.text)-1)
+        "take text of qfentry and strip content after :  from target name
+        let l:striped = trim(get(split(l:item.text, ':', 'KeepEmpty'), 0, ''))
         "add target to completionlist
         let l:targets = add(l:targets, l:striped)
     endfor
