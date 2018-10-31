@@ -3,7 +3,9 @@ if !exists("s:makefileNames")
 endif
 
 function! baker#GetMakefiles(...)
-    let l:path = get(a:, 1, ".")
+    "TODO: let user decide, which default path shall makefiles be taken
+    "root or current directory or maybe even a custom directory
+    let l:path = fnamemodify(expand(get(a:, 1, "%")), ":h").'/'
 
     let l:makefiles = makefilecache#GetMakefileNamesByPath(l:path)
     if empty(l:makefiles)
@@ -92,8 +94,7 @@ function! baker#Complete(ArgumentLead, CmdLine, CursorPosition)
 endfunction
 
 function! baker#CompleteMakefile(ArgumentLead)
-    "get makefiles of current directory
-    let l:makefiles = baker#GetMakefiles(".")
+    let l:makefiles = baker#GetMakefiles()
     "get filenames of makefiles by removing the path
     let l:makefiles = map(l:makefiles, 'fnamemodify(v:val, ":t")')
     "remove all makefiles  that don't match users given argument
@@ -101,7 +102,8 @@ function! baker#CompleteMakefile(ArgumentLead)
 endfunction
 
 function! baker#CompleteTarget(makefile, ArgumentLead)
-        let l:targets = baker#GetTargets(a:makefile)
+        let l:makefile = fnamemodify(expand("%"), ":h").'/'.a:makefile
+        let l:targets = baker#GetTargets(l:makefile)
         "remove all targets  that don't match users given argument
         return filter(l:targets, 'v:val =~ "'.a:ArgumentLead.'"')
 endfunction
@@ -117,24 +119,10 @@ function! baker#ExecuteTargetRule(...)
             echomsg 'No build command defined.'
         endif
     else
-        "TODO: makefile seems to be empty. Maybe not passed from prev
-        "funciton?
-        let l:makefile = get(a:000, 0, "")
-        let l:target = get(a:000, 1, "")
+        let l:makefile = get(a:, 1, "")
+        let l:target = get(a:, 2, "")
         echomsg 'Executing: '.l:target.' from '.l:makefile
         let s:lastBuildCommand = 'make -f '.l:makefile.' '.l:target
         execute s:lastBuildCommand
     endif
 endfunction
-
-"function! Select(path)
-"    let l:entries = baker#Filter(a:path)
-"    call inputsave()
-"    call input(join(l:entries, "\n")."\n", "default", "customlist,SelectTarget")
-"    call inputrestore()
-"endfunction
-"
-"function! SelectTarget(A, L, P)
-"    let l:completions =  ['this', 'are', 'targets']
-"    return baker#Filter()
-"endfunction

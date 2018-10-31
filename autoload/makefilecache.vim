@@ -30,9 +30,8 @@ function! makefilecache#GetByPath(path)
 endfunction
 
 function! makefilecache#GetMakefileNamesByPath(path)
-    let l:path = fnamemodify(a:path, ":h")
-    if has_key(s:cache, l:path)
-        return keys(s:cache[l:path])
+    if has_key(s:cache, a:path)
+        return keys(s:cache[a:path])
     endif
 
     return []
