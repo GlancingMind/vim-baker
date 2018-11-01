@@ -2,22 +2,31 @@ if !exists("s:makefileNames")
     let s:makefileNames = ['GNUmakefile', 'makefile', 'Makefile']
 endif
 
+function! baker#FindInDirectory(directory, patterns) abort
+    if !isdirectory(a:directory)
+        echoerr "Given path isn't a directory"
+    endif
+
+    let l:makefiles = []
+
+    "get all makefiles that match pattern in given directory as a list
+    "and preserve the makefile order: GNUmakefile, makefile, Makefile
+    for l:pattern in a:patterns
+        let l:makefiles += globpath(a:directory, l:pattern, 0, 1)
+    endfor
+
+    "remove all nonreadable files from matching files
+    "e.g. a directories matching given patterns
+    return filter(l:makefiles, "filereadable(v:val)")
+endfunction
+
 function! baker#GetMakefiles(...)
-    "TODO: let user decide, which default path shall makefiles be taken
-    "root or current directory or maybe even a custom directory
     let l:path = fnamemodify(expand(get(a:, 1, "%")), ":h").'/'
 
     let l:makefiles = makefilecache#GetMakefileNamesByPath(l:path)
     if empty(l:makefiles)
-        "get all makefiles in current directory as a list
-        "and preserve the makefile order: GNUmakefile, makefile, Makefile
-        for l:makefile in s:makefileNames
-            let l:makefiles += globpath(l:path, l:makefile, v:false, v:true)
-        endfor
-
-        "remove all nonreadable files from matching files
-        "e.g. a directory named 'makefile'
-        let l:makefiles = filter(l:makefiles, "filereadable(v:val)")
+        let l:makefiles = baker#FindInDirectory(l:path, s:makefileNames)
+        "parse matching makefiles
         call map(copy(l:makefiles), "makefile#Parse(v:val)")
     endif
 
@@ -25,7 +34,12 @@ function! baker#GetMakefiles(...)
 endfunction
 
 function! baker#GetTargets(makefile)
-    return makefile#Parse(a:makefile).targets
+    let l:makefile = makefilecache#GetByPath(a:makefile)
+    if empty(l:makefile)
+        return makefile#Parse(a:makefile).targets
+    endif
+
+    return l:makefile
 endfunction
 
 function! baker#ListTargets(path)

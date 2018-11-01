@@ -14,14 +14,8 @@ function! makefile#Create(path, targets)
 endfunction
 
 function! makefile#Parse(path)
-    let l:makefile = makefilecache#GetByPath(a:path)
-    if empty(l:makefile)
-        let l:targets = makefile#ParseTargets(a:path)
-        let l:makefile = makefile#Create(a:path, l:targets)
-        call makefilecache#Add(l:makefile)
-    endif
-
-    return l:makefile
+    let l:targets = makefile#ParseTargets(a:path)
+    return makefile#Create(a:path, l:targets)
 endfunction
 
 function! makefile#ParseTargets(path)
