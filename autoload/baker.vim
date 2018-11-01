@@ -2,6 +2,16 @@ if !exists("s:makefileNames")
     let s:makefileNames = ['GNUmakefile', 'makefile', 'Makefile']
 endif
 
+let s:makefileLookupPath = "%"
+
+function! baker#GetDirectoryPath(path)
+    if isdirectory(a:path)
+        return a:path
+    endif
+
+    return fnamemodify(expand(a:path), ":h").'/'
+endfunction
+
 function! baker#FindInDirectory(directory, patterns) abort
     if !isdirectory(a:directory)
         echoerr "Given path isn't a directory"
@@ -21,7 +31,7 @@ function! baker#FindInDirectory(directory, patterns) abort
 endfunction
 
 function! baker#GetMakefiles(...)
-    let l:path = fnamemodify(expand(get(a:, 1, "%")), ":h").'/'
+    let l:path = baker#GetDirectoryPath(get(a:, 1, s:makefileLookupPath))
 
     let l:makefiles = makefilecache#GetMakefileNamesByPath(l:path)
     if empty(l:makefiles)
@@ -82,7 +92,7 @@ function! baker#CompleteMakefile(ArgumentLead)
 endfunction
 
 function! baker#CompleteTarget(makefile, ArgumentLead)
-        let l:makefile = fnamemodify(expand("%"), ":h").'/'.a:makefile
+        let l:makefile = baker#GetDirectoryPath(s:makefileLookupPath).a:makefile
         let l:targets = baker#GetTargets(l:makefile)
         "remove all targets  that don't match users given argument
         return filter(l:targets, 'v:val =~ "'.a:ArgumentLead.'"')
@@ -99,7 +109,7 @@ function! baker#ExecuteTargetRule(...)
             echomsg 'No build command defined.'
         endif
     else
-        let l:makefile = get(a:, 1, "")
+        let l:makefile = baker#GetDirectoryPath(s:makefileLookupPath).get(a:, 1, "")
         let l:target = get(a:, 2, "")
         echomsg 'Executing: '.l:target.' from '.l:makefile
         let s:lastBuildCommand = 'make -f '.l:makefile.' '.l:target
