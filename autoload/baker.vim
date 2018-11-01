@@ -42,40 +42,6 @@ function! baker#GetTargets(makefile)
     return l:makefile
 endfunction
 
-function! baker#ListTargets(path)
-    if isdirectory(a:path)
-        "get makefiles of current directory
-        for l:makefile in baker#GetMakefiles(a:path)
-            call baker#ListTargets(l:makefile)
-        endfor
-    endif
-
-    "when path points to a potential makefile
-    if filereadable(a:path)
-        "all filename of makefile to output
-        let l:index = 0
-        echo fnamemodify(a:path, ":t")."\n"
-        for l:target in baker#GetTargets(a:path)
-            echo printf("%2d:\t%s", l:index, l:target)
-            let l:index += 1
-        endfor
-    endif
-endfunction
-
-function! baker#CompleteDirectoryOrMakefile(ArgumentLead, CmdLine, CursorPosition)
-    let l:path = "."
-    if !empty(a:ArgumentLead)
-        let l:path = a:ArgumentLead
-    endif
-
-    "add directories to list of suggested completions
-    let l:completions = globpath(l:path, "*/", v:false, v:true)
-    "add makefiles of current directory
-    let l:completions += baker#GetMakefiles(l:path)
-    "remove all makefiles and directories that don't match users given argument
-    return filter(l:completions, "v:val =~ \"^".a:ArgumentLead."\"")
-endfunction
-
 function! baker#Complete(ArgumentLead, CmdLine, CursorPosition)
     let l:arguments = split(a:CmdLine)
     let l:makefile = get(l:arguments, 1, "")
