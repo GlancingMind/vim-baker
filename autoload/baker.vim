@@ -36,8 +36,8 @@ function! baker#GetMakefiles(...)
     let l:makefiles = makefilecache#GetMakefileNamesByPath(l:path)
     if empty(l:makefiles)
         let l:makefiles = baker#FindInDirectory(l:path, s:makefileNames)
-        "parse matching makefiles
-        call map(copy(l:makefiles), "makefile#Parse(v:val)")
+        "parse matching makefiles and add them to the cache
+        call map(copy(l:makefiles), "makefilecache#Add(makefile#Parse(v:val))")
     endif
 
     return l:makefiles
@@ -46,10 +46,11 @@ endfunction
 function! baker#GetTargets(makefile)
     let l:makefile = makefilecache#GetByPath(a:makefile)
     if empty(l:makefile)
-        return makefile#Parse(a:makefile).targets
+        let l:makefile = makefile#Parse(a:makefile)
+        call makefilecache#Add(l:makefile)
     endif
 
-    return l:makefile
+    return l:makefile.targets
 endfunction
 
 function! baker#Complete(ArgumentLead, CmdLine, CursorPosition)
@@ -120,5 +121,6 @@ function! baker#ExecuteTargetRule(...)
         echomsg 'Executing: '.l:target.' from '.l:makefile
         let s:lastBuildCommand = 'make -f '.l:makefile.' '.l:target
         execute s:lastBuildCommand
+        redraw!
     endif
 endfunction
