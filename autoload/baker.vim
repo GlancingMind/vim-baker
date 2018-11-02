@@ -99,6 +99,12 @@ function! baker#CompleteTarget(makefile, ArgumentLead)
 endfunction
 
 function! baker#ExecuteTargetRule(...)
+
+    if a:0 >= 3
+        echoerr "Too many arguments given"
+        return
+    endif
+
     "check if a target was specified by user
     if a:0 < 1
         if exists("s:lastBuildCommand")
