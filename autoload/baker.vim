@@ -53,50 +53,25 @@ function! baker#GetTargets(makefile)
     return l:makefile.targets
 endfunction
 
-function! baker#Complete(ArgumentLead, CmdLine, CursorPosition)
-    let l:arguments = split(a:CmdLine)
-    let l:makefile = get(l:arguments, 1, "")
-    let l:target = get(l:arguments, 2, "")
-    let l:completions = []
-
-    let l:makefileArgComplete = !empty(l:makefile) && a:CmdLine[a:CursorPosition - 1] == ' '
-    if !l:makefileArgComplete && empty(l:target)
-        "complete makefiles
-        let l:completions = baker#CompleteMakefile(l:makefile)
-        "append space to completion, to prevent user from typing it
-        let l:completions = map(l:completions, 'v:val." "')
-        if empty(l:completions)
-            echo "No matching makefile found"
-        endif
-        return l:completions
-    endif
-
-    let l:targetArgComplete = !empty(l:target) && a:CmdLine[a:CursorPosition - 1] == ' '
-    if !l:targetArgComplete
-        "complete targets
-        let l:completions = baker#CompleteTarget(l:makefile, l:target)
-        if empty(l:completions)
-            echo "No matching target found in : ".l:makefile
-        endif
-        return l:completions
-    endif
-
-    return l:completions
+function! baker#Complete(argLead, cmdLine, curPos)
+    let l:compFuncs = ['baker#CompleteMakefile', 'baker#CompleteTarget']
+    return ComComp#Complete(a:argLead, a:cmdLine, a:curPos, l:compFuncs)
 endfunction
 
-function! baker#CompleteMakefile(ArgumentLead)
+function! baker#CompleteTarget(arguments, lead)
+    let l:makefile = a:arguments[-1]
+    let l:makefile = baker#GetDirectoryPath(s:makefileLookupPath).l:makefile
+    let l:targets = baker#GetTargets(l:makefile)
+    "remove all targets  that don't match users given argument
+    return filter(copy(l:targets), 'v:val =~ a:lead')
+endfunction
+
+function! baker#CompleteMakefile(arguments, lead)
     let l:makefiles = baker#GetMakefiles()
     "get filenames of makefiles by removing the path
     let l:makefiles = map(l:makefiles, 'fnamemodify(v:val, ":t")')
     "remove all makefiles  that don't match users given argument
-    return filter(l:makefiles, 'v:val =~ "'.a:ArgumentLead.'"')
-endfunction
-
-function! baker#CompleteTarget(makefile, ArgumentLead)
-        let l:makefile = baker#GetDirectoryPath(s:makefileLookupPath).a:makefile
-        let l:targets = baker#GetTargets(l:makefile)
-        "remove all targets  that don't match users given argument
-        return filter(l:targets, 'v:val =~ "'.a:ArgumentLead.'"')
+    return filter(copy(l:makefiles), 'v:val =~ a:lead')
 endfunction
 
 function! baker#ExecuteTargetRule(...)
