@@ -18,6 +18,10 @@ function! makefile#Parse(path)
     return makefile#Create(a:path, l:targets)
 endfunction
 
+function! makefile#IsPhonyTarget(target)
+    return a:target[0] == '.'
+endfunction
+
 function! makefile#ParseTargets(path)
     if !filereadable(a:path)
         echoerr string(a:path) ' not readable!'
@@ -27,13 +31,15 @@ function! makefile#ParseTargets(path)
     let l:targets = []
 
     "grep all targets from makefiles
-    execute 'silent! vimgrep /^\w\+:/gj '.a:path
+    execute 'silent! vimgrep /^\S[A-Za-z0-9_/. ]\+:/gj '.a:path
     "get found target entries from quickfixlist
     for l:item in getqflist()
         "take text of qfentry and strip content after :  from target name
         let l:striped = trim(get(split(l:item.text, ':', 'KeepEmpty'), 0, ''))
-        "add target to completionlist
-        let l:targets = add(l:targets, l:striped)
+        "add target to completionlist if target is not phony target
+        if !makefile#IsPhonyTarget(l:striped)
+            let l:targets = add(l:targets, l:striped)
+        endif
     endfor
 
     return l:targets
