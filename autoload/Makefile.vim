@@ -4,7 +4,7 @@ let s:makefile = {
             \'targets': []
             \}
 
-function! makefile#Create(path, targets)
+function! Makefile#Create(path, targets)
     let l:self = copy(s:makefile)
     let l:self.path = fnamemodify(a:path, ':h').'/'
     let l:self.filename = fnamemodify(a:path, ':t')
@@ -13,16 +13,16 @@ function! makefile#Create(path, targets)
     return l:self
 endfunction
 
-function! makefile#Parse(path)
-    let l:targets = makefile#ParseTargets(a:path)
-    return makefile#Create(a:path, l:targets)
+function! Makefile#Parse(path)
+    let l:targets = Makefile#ParseTargets(a:path)
+    return Makefile#Create(a:path, l:targets)
 endfunction
 
-function! makefile#IsPhonyTarget(target)
+function! Makefile#IsPhonyTarget(target)
     return a:target[0] is# '.'
 endfunction
 
-function! makefile#QfEntryToTargets(entry)
+function! Makefile#QfEntryToTargets(entry)
     "removes content after :  from target name
     let l:target = trim(get(split(a:entry, ':', 'KeepEmpty'), 0, ''))
     "split targets up if multiple targetnames are specified before :
@@ -30,7 +30,7 @@ function! makefile#QfEntryToTargets(entry)
     return split(l:target)
 endfunction
 
-function! makefile#ParseTargets(path)
+function! Makefile#ParseTargets(path)
     if !filereadable(a:path)
         echoerr string(a:path).' not readable!'
     endif
@@ -43,11 +43,11 @@ function! makefile#ParseTargets(path)
     "get found target entries from quickfixlist
     for l:entry in getqflist()
         "add targets to completionlist
-        let l:targets += makefile#QfEntryToTargets(l:entry.text)
+        let l:targets += Makefile#QfEntryToTargets(l:entry.text)
     endfor
 
     "remove phony targets
-    call filter(l:targets, '!makefile#IsPhonyTarget(v:val)')
+    call filter(l:targets, '!Makefile#IsPhonyTarget(v:val)')
 
     return l:targets
 endfunction

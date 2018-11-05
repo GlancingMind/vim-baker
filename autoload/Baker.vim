@@ -4,7 +4,7 @@ endif
 
 let s:makefileLookupPath = '%'
 
-function! baker#GetDirectoryPath(path)
+function! Baker#GetDirectoryPath(path)
     if isdirectory(a:path)
         return a:path
     endif
@@ -12,7 +12,7 @@ function! baker#GetDirectoryPath(path)
     return fnamemodify(expand(a:path), ':h').'/'
 endfunction
 
-function! baker#FindInDirectory(directory, patterns) abort
+function! Baker#FindInDirectory(directory, patterns) abort
     if !isdirectory(a:directory)
         echoerr 'Given path isn't a directory'
     endif
@@ -30,51 +30,51 @@ function! baker#FindInDirectory(directory, patterns) abort
     return filter(l:makefiles, 'filereadable(v:val)')
 endfunction
 
-function! baker#GetMakefiles(...)
-    let l:path = baker#GetDirectoryPath(get(a:, 1, s:makefileLookupPath))
+function! Baker#GetMakefiles(...)
+    let l:path = Baker#GetDirectoryPath(get(a:, 1, s:makefileLookupPath))
 
-    let l:makefiles = makefilecache#GetMakefileNamesByPath(l:path)
+    let l:makefiles = Makefilecache#GetMakefileNamesByPath(l:path)
     if empty(l:makefiles)
-        let l:makefiles = baker#FindInDirectory(l:path, s:makefileNames)
+        let l:makefiles = Baker#FindInDirectory(l:path, s:makefileNames)
         "parse matching makefiles and add them to the cache
-        call map(copy(l:makefiles), 'makefilecache#Add(makefile#Parse(v:val))')
+        call map(copy(l:makefiles), 'Makefilecache#Add(Makefile#Parse(v:val))')
     endif
 
     return l:makefiles
 endfunction
 
-function! baker#GetTargets(makefile)
-    let l:makefile = makefilecache#GetByPath(a:makefile)
+function! Baker#GetTargets(makefile)
+    let l:makefile = Makefilecache#GetByPath(a:makefile)
     if empty(l:makefile)
-        let l:makefile = makefile#Parse(a:makefile)
-        call makefilecache#Add(l:makefile)
+        let l:makefile = Makefile#Parse(a:makefile)
+        call Makefilecache#Add(l:makefile)
     endif
 
     return l:makefile.targets
 endfunction
 
-function! baker#Complete(argLead, cmdLine, curPos)
-    let l:compFuncs = ['baker#CompleteMakefile', 'baker#CompleteTarget']
+function! Baker#Complete(argLead, cmdLine, curPos)
+    let l:compFuncs = ['Baker#CompleteMakefile', 'Baker#CompleteTarget']
     return ComComp#Complete(a:argLead, a:cmdLine, a:curPos, l:compFuncs)
 endfunction
 
-function! baker#CompleteTarget(arguments, lead)
+function! Baker#CompleteTarget(arguments, lead)
     let l:makefile = a:arguments[-1]
-    let l:makefile = baker#GetDirectoryPath(s:makefileLookupPath).l:makefile
-    let l:targets = baker#GetTargets(l:makefile)
+    let l:makefile = Baker#GetDirectoryPath(s:makefileLookupPath).l:makefile
+    let l:targets = Baker#GetTargets(l:makefile)
     "remove all targets  that don't match users given argument
     return filter(copy(l:targets), 'v:val =~ a:lead')
 endfunction
 
-function! baker#CompleteMakefile(arguments, lead)
-    let l:makefiles = baker#GetMakefiles()
+function! Baker#CompleteMakefile(arguments, lead)
+    let l:makefiles = Baker#GetMakefiles()
     "get filenames of makefiles by removing the path
     let l:makefiles = map(l:makefiles, 'fnamemodify(v:val, ":t")')
     "remove all makefiles  that don't match users given argument
     return filter(copy(l:makefiles), 'v:val =~ a:lead')
 endfunction
 
-function! baker#ExecuteTargetRule(...)
+function! Baker#ExecuteTargetRule(...)
 
     if a:0 >= 3
         echoerr 'Too many arguments given'
@@ -91,7 +91,7 @@ function! baker#ExecuteTargetRule(...)
             echomsg 'No build command defined.'
         endif
     else
-        let l:makefile = baker#GetDirectoryPath(s:makefileLookupPath).get(a:, 1, '')
+        let l:makefile = Baker#GetDirectoryPath(s:makefileLookupPath).get(a:, 1, '')
         let l:target = get(a:, 2, '')
         echomsg 'Executing: '.l:target.' from '.l:makefile
         let s:lastBuildCommand = 'make -f '.l:makefile.' '.l:target
