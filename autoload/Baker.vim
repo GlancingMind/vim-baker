@@ -1,11 +1,3 @@
-if !exists('s:makefileNames')
-    let s:makefileNames = ['GNUmakefile', 'makefile', 'Makefile']
-endif
-
-if !exists('s:makefileLookupPath')
-    let s:makefileLookupPath = '%'
-endif
-
 function! Baker#GetDirectoryPath(path)
     if isdirectory(a:path)
         return a:path
@@ -35,11 +27,11 @@ function! Baker#FindInDirectory(directory, patterns) abort
 endfunction
 
 function! Baker#GetMakefiles(...)
-    let l:path = Baker#GetDirectoryPath(get(a:, 1, s:makefileLookupPath))
+    let l:path = Baker#GetDirectoryPath(get(a:, 1, g:Baker_MakefileLookupPath))
 
     let l:makefiles = Makefilecache#GetMakefileNamesByPath(l:path)
     if empty(l:makefiles)
-        let l:makefiles = Baker#FindInDirectory(l:path, s:makefileNames)
+        let l:makefiles = Baker#FindInDirectory(l:path, g:Baker_MakefileNames)
         "parse matching makefiles and add them to the cache
         call map(copy(l:makefiles), 'Makefilecache#Add(Makefile#Parse(v:val))')
     endif
@@ -64,7 +56,7 @@ endfunction
 
 function! Baker#CompleteTarget(arguments, lead)
     let l:makefile = a:arguments[-1]
-    let l:makefile = Baker#GetDirectoryPath(s:makefileLookupPath).l:makefile
+    let l:makefile = Baker#GetDirectoryPath(g:Baker_MakefileLookupPath).l:makefile
     let l:targets = Baker#GetTargets(l:makefile)
     "remove all targets  that don't match users given argument
     return filter(copy(l:targets), 'v:val =~ a:lead')
@@ -97,7 +89,7 @@ function! Baker#ExecuteTargetRule(...)
             echomsg 'No build command defined.'
         endif
     else
-        let l:makefile = Baker#GetDirectoryPath(s:makefileLookupPath).get(a:, 1, '')
+        let l:makefile = Baker#GetDirectoryPath(g:Baker_MakefileLookupPath).get(a:, 1, '')
         let l:target = get(a:, 2, '')
         echomsg 'Executing: '.l:target.' from '.l:makefile
         let s:lastBuildCommand = 'make -f '.l:makefile.' '.l:target
