@@ -2,7 +2,7 @@
 function! ComComp#Complete(ArgumentLead, CmdLine, CursorPosition, compFuncs)
     let l:argumentSeperator = ' '
     "determine if given argument has been completed
-    let l:ArgComplete = a:CmdLine[a:CursorPosition - 1] == l:argumentSeperator
+    let l:ArgComplete = a:CmdLine[a:CursorPosition - 1] is# l:argumentSeperator
     let l:arguments = split(a:CmdLine)
     "remove commandname from arguments
     call remove(l:arguments, 0)

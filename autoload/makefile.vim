@@ -19,7 +19,7 @@ function! makefile#Parse(path)
 endfunction
 
 function! makefile#IsPhonyTarget(target)
-    return a:target[0] == '.'
+    return a:target[0] is# '.'
 endfunction
 
 function! makefile#QfEntryToTargets(entry)
