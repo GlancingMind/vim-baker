@@ -2,7 +2,9 @@ if !exists('s:makefileNames')
     let s:makefileNames = ['GNUmakefile', 'makefile', 'Makefile']
 endif
 
-let s:makefileLookupPath = '%'
+if !exists('s:makefileLookupPath')
+    let s:makefileLookupPath = '%'
+endif
 
 function! Baker#GetDirectoryPath(path)
     if isdirectory(a:path)
