@@ -6,11 +6,12 @@ function! Baker#GetDirectoryPath(path)
     return fnamemodify(expand(a:path), ':h').'/'
 endfunction
 
-function! Baker#FindInDirectory(directory, patterns) abort
+function! Baker#FindInDirectory(directory, patterns)
     if !isdirectory(a:directory)
         echohl ErrorMsg
-        echomsg 'Given path isn't a directory'
+        echomsg 'Given path is not a directory'
         echohl None
+        return []
     endif
 
     let l:makefiles = []
@@ -54,20 +55,20 @@ function! Baker#Complete(argLead, cmdLine, curPos)
     return ComComp#Complete(a:argLead, a:cmdLine, a:curPos, l:compFuncs)
 endfunction
 
-function! Baker#CompleteTarget(arguments, lead)
+function! Baker#CompleteTarget(arguments, argLead)
     let l:makefile = a:arguments[-1]
     let l:makefile = Baker#GetDirectoryPath(g:Baker_MakefileLookupPath).l:makefile
     let l:targets = Baker#GetTargets(l:makefile)
     "remove all targets  that don't match users given argument
-    return filter(copy(l:targets), 'v:val =~ a:lead')
+    return filter(copy(l:targets), 'v:val =~ a:argLead')
 endfunction
 
-function! Baker#CompleteMakefile(arguments, lead)
+function! Baker#CompleteMakefile(arguments, argLead)
     let l:makefiles = Baker#GetMakefiles()
     "get filenames of makefiles by removing the path
     let l:makefiles = map(l:makefiles, 'fnamemodify(v:val, ":t")')
     "remove all makefiles  that don't match users given argument
-    return filter(copy(l:makefiles), 'v:val =~ a:lead')
+    return filter(copy(l:makefiles), 'v:val =~ a:argLead')
 endfunction
 
 function! Baker#ExecuteTargetRule(...)
