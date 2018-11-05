@@ -69,7 +69,7 @@ endfunction
 function! baker#CompleteMakefile(arguments, lead)
     let l:makefiles = baker#GetMakefiles()
     "get filenames of makefiles by removing the path
-    let l:makefiles = map(l:makefiles, 'fnamemodify(v:val, ':t')')
+    let l:makefiles = map(l:makefiles, 'fnamemodify(v:val, ":t")')
     "remove all makefiles  that don't match users given argument
     return filter(copy(l:makefiles), 'v:val =~ a:lead')
 endfunction
