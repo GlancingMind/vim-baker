@@ -32,7 +32,9 @@ endfunction
 
 function! Makefile#ParseTargets(path)
     if !filereadable(a:path)
-        echoerr string(a:path).' not readable!'
+        echohl ErrorMsg
+        echomsg string(a:path).' not readable!'
+        echohl None
     endif
 
     "list of targets in makefile

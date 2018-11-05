@@ -16,7 +16,9 @@ endfunction
 
 function! Baker#FindInDirectory(directory, patterns) abort
     if !isdirectory(a:directory)
-        echoerr 'Given path isn't a directory'
+        echohl ErrorMsg
+        echomsg 'Given path isn't a directory'
+        echohl None
     endif
 
     let l:makefiles = []
@@ -79,7 +81,9 @@ endfunction
 function! Baker#ExecuteTargetRule(...)
 
     if a:0 >= 3
-        echoerr 'Too many arguments given'
+        echohl ErrorMsg
+        echomsg 'Too many arguments given'
+        echohl None
         return
     endif
 
