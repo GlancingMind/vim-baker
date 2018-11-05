@@ -15,11 +15,11 @@ function! ComComp#Complete(ArgumentLead, CmdLine, CursorPosition, compFuncs)
 
     if (l:argCount >= len(a:compFuncs))
         "out of range
-        echo "No comp functions defined"
+        echo 'No comp functions defined'
         return []
     endif
 
-    let l:argslead = ""
+    let l:argslead = ''
     if !empty(l:arguments) && !l:ArgComplete
         let l:argslead = remove(l:arguments, -1)
     endif

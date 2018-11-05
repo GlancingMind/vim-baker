@@ -1,20 +1,20 @@
-if !exists("s:makefileNames")
+if !exists('s:makefileNames')
     let s:makefileNames = ['GNUmakefile', 'makefile', 'Makefile']
 endif
 
-let s:makefileLookupPath = "%"
+let s:makefileLookupPath = '%'
 
 function! baker#GetDirectoryPath(path)
     if isdirectory(a:path)
         return a:path
     endif
 
-    return fnamemodify(expand(a:path), ":h").'/'
+    return fnamemodify(expand(a:path), ':h').'/'
 endfunction
 
 function! baker#FindInDirectory(directory, patterns) abort
     if !isdirectory(a:directory)
-        echoerr "Given path isn't a directory"
+        echoerr 'Given path isn't a directory'
     endif
 
     let l:makefiles = []
@@ -27,7 +27,7 @@ function! baker#FindInDirectory(directory, patterns) abort
 
     "remove all nonreadable files from matching files
     "e.g. a directories matching given patterns
-    return filter(l:makefiles, "filereadable(v:val)")
+    return filter(l:makefiles, 'filereadable(v:val)')
 endfunction
 
 function! baker#GetMakefiles(...)
@@ -37,7 +37,7 @@ function! baker#GetMakefiles(...)
     if empty(l:makefiles)
         let l:makefiles = baker#FindInDirectory(l:path, s:makefileNames)
         "parse matching makefiles and add them to the cache
-        call map(copy(l:makefiles), "makefilecache#Add(makefile#Parse(v:val))")
+        call map(copy(l:makefiles), 'makefilecache#Add(makefile#Parse(v:val))')
     endif
 
     return l:makefiles
@@ -69,7 +69,7 @@ endfunction
 function! baker#CompleteMakefile(arguments, lead)
     let l:makefiles = baker#GetMakefiles()
     "get filenames of makefiles by removing the path
-    let l:makefiles = map(l:makefiles, 'fnamemodify(v:val, ":t")')
+    let l:makefiles = map(l:makefiles, 'fnamemodify(v:val, ':t')')
     "remove all makefiles  that don't match users given argument
     return filter(copy(l:makefiles), 'v:val =~ a:lead')
 endfunction
@@ -77,13 +77,13 @@ endfunction
 function! baker#ExecuteTargetRule(...)
 
     if a:0 >= 3
-        echoerr "Too many arguments given"
+        echoerr 'Too many arguments given'
         return
     endif
 
     "check if a target was specified by user
     if a:0 < 1
-        if exists("s:lastBuildCommand")
+        if exists('s:lastBuildCommand')
             echomsg 'Executing last build command:'
             execute s:lastBuildCommand
             redraw!
@@ -91,8 +91,8 @@ function! baker#ExecuteTargetRule(...)
             echomsg 'No build command defined.'
         endif
     else
-        let l:makefile = baker#GetDirectoryPath(s:makefileLookupPath).get(a:, 1, "")
-        let l:target = get(a:, 2, "")
+        let l:makefile = baker#GetDirectoryPath(s:makefileLookupPath).get(a:, 1, '')
+        let l:target = get(a:, 2, '')
         echomsg 'Executing: '.l:target.' from '.l:makefile
         let s:lastBuildCommand = 'make -f '.l:makefile.' '.l:target
         execute s:lastBuildCommand

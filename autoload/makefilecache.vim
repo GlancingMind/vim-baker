@@ -17,8 +17,8 @@ function! makefilecache#Add(makefile)
 endfunction
 
 function! makefilecache#GetByPath(path)
-    let l:path = fnamemodify(a:path, ":h").'/'
-    let l:filename = fnamemodify(a:path, ":t")
+    let l:path = fnamemodify(a:path, ':h').'/'
+    let l:filename = fnamemodify(a:path, ':t')
     if has_key(s:cache, l:path)
         if has_key(s:cache[l:path], l:filename)
             let l:targets =  s:cache[l:path][l:filename]

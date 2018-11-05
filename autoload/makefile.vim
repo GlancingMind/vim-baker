@@ -1,13 +1,13 @@
 let s:makefile = {
-            \'path': "",
+            \'path': '',
             \'filename': '',
             \'targets': []
             \}
 
 function! makefile#Create(path, targets)
     let l:self = copy(s:makefile)
-    let l:self.path = fnamemodify(a:path, ":h").'/'
-    let l:self.filename = fnamemodify(a:path, ":t")
+    let l:self.path = fnamemodify(a:path, ':h').'/'
+    let l:self.filename = fnamemodify(a:path, ':t')
     let l:self.targets = a:targets
 
     return l:self
