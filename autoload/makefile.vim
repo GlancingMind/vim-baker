@@ -39,7 +39,7 @@ function! makefile#ParseTargets(path)
     let l:targets = []
 
     "grep all targets from makefiles
-    noautocmd execute 'silent! vimgrep /^\S[A-Za-z0-9_/. ]\+:/gj '.a:path
+    noautocmd execute 'silent! vimgrep /\m\C^\S[A-Za-z0-9_/. ]\+:/gj '.a:path
     "get found target entries from quickfixlist
     for l:entry in getqflist()
         "add targets to completionlist
