@@ -4,7 +4,7 @@ let s:makefile = {
             \'targets': []
             \}
 
-function! Makefile#Create(path, targets)
+function! s:Create(path, targets)
     let l:self = copy(s:makefile)
     let l:self.path = fnamemodify(a:path, ':h').'/'
     let l:self.filename = fnamemodify(a:path, ':t')
@@ -13,16 +13,7 @@ function! Makefile#Create(path, targets)
     return l:self
 endfunction
 
-function! Makefile#Parse(path)
-    let l:targets = Makefile#ParseTargets(a:path)
-    return Makefile#Create(a:path, l:targets)
-endfunction
-
-function! Makefile#IsPhonyTarget(target)
-    return a:target[0] is# '.'
-endfunction
-
-function! Makefile#QfEntryToTargets(entry)
+function! s:QfEntryToTargets(entry)
     "removes content after :  from target name
     let l:target = trim(get(split(a:entry, ':', 'KeepEmpty'), 0, ''))
     "split targets up if multiple targetnames are specified before :
@@ -30,26 +21,28 @@ function! Makefile#QfEntryToTargets(entry)
     return split(l:target)
 endfunction
 
-function! Makefile#ParseTargets(path)
+function! s:ParseTargets(path)
+    "list of targets in makefile
+    let l:targets = []
+
+    "grep all targets from makefiles
+    noautocmd silent! execute 'vimgrep /\m\C^[A-Za-z0-9][A-Za-z0-9_/. ]\+:/gj '.a:path
+    "get found target entries from quickfixlist
+    for l:entry in getqflist()
+        "add targets to completionlist
+        let l:targets += s:QfEntryToTargets(l:entry.text)
+    endfor
+
+    return l:targets
+endfunction
+
+function! Makefile#Parse(path)
     if !filereadable(a:path)
         echohl ErrorMsg
         echomsg string(a:path).' not readable!'
         echohl None
     endif
 
-    "list of targets in makefile
-    let l:targets = []
-
-    "grep all targets from makefiles
-    noautocmd execute 'silent! vimgrep /\m\C^\S[A-Za-z0-9_/. ]\+:/gj '.a:path
-    "get found target entries from quickfixlist
-    for l:entry in getqflist()
-        "add targets to completionlist
-        let l:targets += Makefile#QfEntryToTargets(l:entry.text)
-    endfor
-
-    "remove phony targets
-    call filter(l:targets, '!Makefile#IsPhonyTarget(v:val)')
-
-    return l:targets
+    let l:targets = s:ParseTargets(a:path)
+    return s:Create(a:path, l:targets)
 endfunction
