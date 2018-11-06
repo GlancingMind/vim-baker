@@ -44,5 +44,5 @@ function! Makefile#Parse(path)
     endif
 
     let l:targets = s:ParseTargets(a:path)
-    return s:Create(a:path, l:targets)
+    return Makefile#Create(a:path, l:targets)
 endfunction
