@@ -4,15 +4,6 @@ let s:makefile = {
             \'targets': []
             \}
 
-function! s:Create(path, targets)
-    let l:self = copy(s:makefile)
-    let l:self.path = fnamemodify(a:path, ':h').'/'
-    let l:self.filename = fnamemodify(a:path, ':t')
-    let l:self.targets = a:targets
-
-    return l:self
-endfunction
-
 function! s:QfEntryToTargets(entry)
     "removes content after :  from target name
     let l:target = trim(get(split(a:entry, ':', 'KeepEmpty'), 0, ''))
@@ -34,6 +25,15 @@ function! s:ParseTargets(path)
     endfor
 
     return l:targets
+endfunction
+
+function! Makefile#Create(path, targets)
+    let l:self = copy(s:makefile)
+    let l:self.path = fnamemodify(a:path, ':h').'/'
+    let l:self.filename = fnamemodify(a:path, ':t')
+    let l:self.targets = a:targets
+
+    return l:self
 endfunction
 
 function! Makefile#Parse(path)

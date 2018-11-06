@@ -30,21 +30,21 @@ endfunction
 function! Baker#GetMakefiles(...)
     let l:path = Baker#GetDirectoryPath(get(a:, 1, g:Baker_MakefileLookupPath))
 
-    let l:makefiles = Makefilecache#GetMakefileNamesByPath(l:path)
+    let l:makefiles = MakefileCache#GetMakefileNamesByPath(l:path)
     if empty(l:makefiles)
         let l:makefiles = Baker#FindInDirectory(l:path, g:Baker_MakefileNames)
         "parse matching makefiles and add them to the cache
-        call map(copy(l:makefiles), 'Makefilecache#Add(Makefile#Parse(v:val))')
+        call map(copy(l:makefiles), 'MakefileCache#Add(Makefile#Parse(v:val))')
     endif
 
     return l:makefiles
 endfunction
 
 function! Baker#GetTargets(makefile)
-    let l:makefile = Makefilecache#GetByPath(a:makefile)
+    let l:makefile = MakefileCache#GetByPath(a:makefile)
     if empty(l:makefile)
         let l:makefile = Makefile#Parse(a:makefile)
-        call Makefilecache#Add(l:makefile)
+        call MakefileCache#Add(l:makefile)
     endif
 
     return l:makefile.targets
