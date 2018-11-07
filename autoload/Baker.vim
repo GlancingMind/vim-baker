@@ -1,3 +1,9 @@
+function! s:EchoError(msg)
+    echohl ErrorMsg
+    echomsg msg
+    echohl None
+endfunction
+
 function! s:GetDirectoryPath(path)
     if isdirectory(a:path)
         return a:path
@@ -8,9 +14,7 @@ endfunction
 
 function! s:FindInDirectory(directory, patterns)
     if !isdirectory(a:directory)
-        echohl ErrorMsg
-        echomsg 'Given path is not a directory'
-        echohl None
+        s:EchoError('Given path is not a directory')
         return []
     endif
 
@@ -73,30 +77,21 @@ function! s:CompleteMakefile(arguments, argLead)
     return filter(copy(l:makefiles), 'v:val =~ a:argLead')
 endfunction
 
-function! Baker#ExecuteTargetRule(...)
-
+function! Baker#Make(...)
     if a:0 >= 3
-        echohl ErrorMsg
-        echomsg 'Too many arguments given'
-        echohl None
+        s:EchoError('Too many arguments given')
         return
     endif
 
-    "check if a target was specified by user
-    if a:0 < 1
-        if exists('s:lastBuildCommand')
-            echomsg 'Executing last build command:'
-            execute s:lastBuildCommand
-            redraw!
-        else
-            echomsg 'No build command defined.'
-        endif
-    else
-        let l:makefile = s:GetDirectoryPath(g:Baker_MakefileLookupPath).get(a:, 1, '')
-        let l:target = get(a:, 2, '')
-        echomsg 'Executing: '.l:target.' from '.l:makefile
-        let s:lastBuildCommand = 'make -f '.l:makefile.' '.l:target
-        execute s:lastBuildCommand
-        redraw!
+    let l:makefile = get(a:, 1, '')
+    let l:target = get(a:, 2, '')
+
+    if !empty(l:makefile)
+        let l:makefile = s:GetDirectoryPath(g:Baker_MakefileLookupPath).l:makefile
+        let &makeprg=printf('make -f %s %s', l:makefile, l:target)
     endif
+
+    echomsg 'Execute: '.string(&makeprg)
+    make
+    redraw!
 endfunction
