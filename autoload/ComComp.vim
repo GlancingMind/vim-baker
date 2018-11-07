@@ -24,8 +24,8 @@ function! ComComp#Complete(argLead, CmdLine, curPos, compFuncs)
         let l:argslead = remove(l:arguments, -1)
     endif
 
-    let l:func = get(a:compFuncs, l:argCount)
-    let l:completion = copy(function(l:func)(l:arguments, l:argslead))
+    let l:CompFunc = get(a:compFuncs, l:argCount)
+    let l:completion = call(l:CompFunc, [l:arguments, l:argslead])
     if empty(l:completion)
         echo 'No completion found'
     endif

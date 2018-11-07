@@ -51,7 +51,9 @@ function! Baker#GetTargets(makefile)
 endfunction
 
 function! Baker#Complete(argLead, cmdLine, curPos)
-    let l:compFuncs = ['Baker#CompleteMakefile', 'Baker#CompleteTarget']
+    let l:CompMakefile = funcref('s:CompleteMakefile')
+    let l:CompTarget = funcref('s:CompleteTarget')
+    let l:compFuncs = [l:CompMakefile, l:CompTarget]
     return ComComp#Complete(a:argLead, a:cmdLine, a:curPos, l:compFuncs)
 endfunction
 
