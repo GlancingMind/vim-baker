@@ -72,7 +72,9 @@ function! Baker#GetTargets(makefile)
     let l:makefile = MakefileCache#GetByPath(a:makefile)
     if empty(l:makefile)
         let l:makefile = Makefile#Parse(a:makefile)
-        call MakefileCache#Add(l:makefile)
+        if !empty(l:makefile)
+            call MakefileCache#Add(l:makefile)
+        endif
     endif
 
     return l:makefile.targets
