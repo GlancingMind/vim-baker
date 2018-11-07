@@ -94,7 +94,9 @@ function! Baker#Make(...)
         let &makeprg=printf('make -f %s %s', l:makefile, l:target)
     endif
 
-    echomsg 'Execute: '.string(&makeprg)
+    echohl MoreMsg
+    echomsg 'Baker#Run: '.string(&makeprg)
+    echohl None
     make
     redraw!
 endfunction
