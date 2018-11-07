@@ -5,11 +5,7 @@ function! s:EchoError(msg)
 endfunction
 
 function! s:GetDirectoryPath(path)
-    if isdirectory(a:path)
-        return a:path
-    endif
-
-    return fnamemodify(expand(a:path), ':h').'/'
+    return fnamemodify(expand(a:path), ':p:.:h').'/'
 endfunction
 
 function! s:FindInDirectory(directory, patterns)
