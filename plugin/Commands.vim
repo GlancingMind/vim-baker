@@ -1,1 +1,1 @@
-command! -complete=customlist,Baker#Complete -nargs=* Baker call Baker#Make(<f-args>)
+command! -complete=customlist,Baker#Complete -nargs=* Baker call Baker#SetMakeprg(<q-args>) | make | redraw!

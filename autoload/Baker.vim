@@ -12,14 +12,6 @@ function! s:ReconstructMakefilePath(makefile)
     return s:GetDirectoryPath(g:Baker_MakefileLookupPath).a:makefile
 endfunction
 
-function! s:SetMakeprg(makefile, target)
-    let l:prg = printf('make -f %s %s', a:makefile, a:target)
-    echohl MoreMsg
-    echomsg 'Set makeprg to: '.l:prg
-    echohl None
-    let &makeprg=l:prg
-endfunction
-
 function! s:FindInDirectory(directory, patterns)
     if !isdirectory(a:directory)
         s:EchoError('Given path is not a directory')
@@ -41,13 +33,13 @@ endfunction
 
 function! s:CompleteTarget(arguments, argLead)
     let l:makefile = s:ReconstructMakefilePath(a:arguments[-1])
-    let l:targets = Baker#GetTargets(l:makefile)
+    let l:targets = s:GetTargets(l:makefile)
     "remove all targets  that don't match users given argument
     return filter(copy(l:targets), 'v:val =~ a:argLead')
 endfunction
 
 function! s:CompleteMakefile(arguments, argLead)
-    let l:makefiles = Baker#GetMakefilesInDirectory()
+    let l:makefiles = s:GetMakefilesInDirectory()
     "get filenames of makefiles by removing the path
     let l:makefiles = map(l:makefiles, 'fnamemodify(v:val, ":t")')
     "remove all makefiles  that don't match users given argument
@@ -67,7 +59,7 @@ function! Baker#Complete(argLead, cmdLine, curPos)
     return l:completion
 endfunction
 
-function! Baker#GetMakefilesInDirectory(...)
+function! s:GetMakefilesInDirectory(...)
     let l:path = s:GetDirectoryPath(get(a:, 1, g:Baker_MakefileLookupPath))
 
     let l:makefiles = MakefileCache#GetMakefileNamesByPath(l:path)
@@ -80,7 +72,7 @@ function! Baker#GetMakefilesInDirectory(...)
     return l:makefiles
 endfunction
 
-function! Baker#GetTargets(makefile)
+function! s:GetTargets(makefile)
     let l:makefile = MakefileCache#GetByPath(a:makefile)
     if empty(l:makefile)
         let l:makefile = Makefile#Parse(a:makefile)
@@ -92,24 +84,14 @@ function! Baker#GetTargets(makefile)
     return l:makefile.targets
 endfunction
 
-function! Baker#Make(...)
-    if a:0 >= 3
-        s:EchoError('Too many arguments given')
+function! Baker#SetMakeprg(args)
+    if empty(a:args)
         return
     endif
 
-    let l:makefile = get(a:, 1, '')
-    let l:target = get(a:, 2, '')
-
-    if !empty(l:makefile)
-        let l:makefile = s:GetDirectoryPath(g:Baker_MakefileLookupPath).l:makefile
-        call s:SetMakeprg(l:makefile, l:target)
-    endif
-
-    echohl MoreMsg
-    echomsg 'Baker#Run: '.string(&makeprg)
-    echohl None
-    make
-    redraw!
+    "prepand makefile with: make -f <project-path>
+    let l:prepand = 'make -f '.s:GetDirectoryPath(g:Baker_MakefileLookupPath)
+    let l:args = substitute(a:args, '\(.*\)\s', l:prepand.'\1 ', '')
+    let &makeprg=l:args
 endfunction
 
