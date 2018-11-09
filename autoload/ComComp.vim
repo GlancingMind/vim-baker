@@ -16,18 +16,17 @@ function! s:ExtractArgLead(arguments, argseperator)
     return ''
 endfunction
 
-function! ComComp#Complete(cmdline, compFuncs)
-    let l:argseperator = ' '
-    let l:arguments = s:GetArguments(a:cmdline, l:argseperator)
-    let l:arglead = s:ExtractArgLead(l:arguments, l:argseperator)
+function! ComComp#Complete(cmdline, compfuncs, argseperator)
+    let l:arguments = s:GetArguments(a:cmdline, a:argseperator)
+    let l:arglead = s:ExtractArgLead(l:arguments, a:argseperator)
     let l:argcount = len(l:arguments)
     let l:completions = []
 
-    if (l:argcount >= len(a:compFuncs))
+    if (l:argcount >= len(a:compfuncs))
         return l:completions
     endif
 
-    let l:CompFunc = get(a:compFuncs, l:argcount)
-    let l:completions = call(l:CompFunc, [l:arguments, l:arglead])
-    return map(l:completions, 'v:val . l:argseperator')
+    let l:CompletionFunction = get(a:compfuncs, l:argcount)
+    let l:completions = call(l:CompletionFunction, [l:arguments, l:arglead])
+    return map(l:completions, 'v:val . a:argseperator')
 endfunction

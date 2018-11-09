@@ -58,7 +58,7 @@ function! Baker#Complete(argLead, cmdLine, curPos)
     let l:CompMakefile = funcref('s:CompleteMakefile')
     let l:CompTarget = funcref('s:CompleteTarget')
     let l:compFuncs = [l:CompMakefile, l:CompTarget]
-    let l:completion = ComComp#Complete(a:cmdLine, l:compFuncs)
+    let l:completion = ComComp#Complete(a:cmdLine, l:compFuncs, ' ')
 
     if empty(l:completion)
         echo 'No completion found'
