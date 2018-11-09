@@ -8,6 +8,18 @@ function! s:GetDirectoryPath(path)
     return fnamemodify(expand(a:path), ':p:.:h').'/'
 endfunction
 
+function! s:ReconstructMakefilePath(makefile)
+    return s:GetDirectoryPath(g:Baker_MakefileLookupPath).a:makefile
+endfunction
+
+function! s:SetMakeprg(makefile, target)
+    let l:prg = printf('make -f %s %s', a:makefile, a:target)
+    echohl MoreMsg
+    echomsg 'Set makeprg to: '.l:prg
+    echohl None
+    let &makeprg=l:prg
+endfunction
+
 function! s:FindInDirectory(directory, patterns)
     if !isdirectory(a:directory)
         s:EchoError('Given path is not a directory')
@@ -28,8 +40,7 @@ function! s:FindInDirectory(directory, patterns)
 endfunction
 
 function! s:CompleteTarget(arguments, argLead)
-    let l:makefile = a:arguments[-1]
-    let l:makefile = s:GetDirectoryPath(g:Baker_MakefileLookupPath).l:makefile
+    let l:makefile = s:ReconstructMakefilePath(a:arguments[-1])
     let l:targets = Baker#GetTargets(l:makefile)
     "remove all targets  that don't match users given argument
     return filter(copy(l:targets), 'v:val =~ a:argLead')
@@ -47,9 +58,14 @@ function! Baker#Complete(argLead, cmdLine, curPos)
     let l:CompMakefile = funcref('s:CompleteMakefile')
     let l:CompTarget = funcref('s:CompleteTarget')
     let l:compFuncs = [l:CompMakefile, l:CompTarget]
-    return ComComp#Complete(a:argLead, a:cmdLine, a:curPos, l:compFuncs)
-endfunction
+    let l:completion = ComComp#Complete(a:cmdLine, l:compFuncs)
 
+    if empty(l:completion)
+        echo 'No completion found'
+    endif
+
+    return l:completion
+endfunction
 
 function! Baker#GetMakefilesInDirectory(...)
     let l:path = s:GetDirectoryPath(get(a:, 1, g:Baker_MakefileLookupPath))
@@ -87,7 +103,7 @@ function! Baker#Make(...)
 
     if !empty(l:makefile)
         let l:makefile = s:GetDirectoryPath(g:Baker_MakefileLookupPath).l:makefile
-        let &makeprg=printf('make -f %s %s', l:makefile, l:target)
+        call s:SetMakeprg(l:makefile, l:target)
     endif
 
     echohl MoreMsg
@@ -96,3 +112,4 @@ function! Baker#Make(...)
     make
     redraw!
 endfunction
+
