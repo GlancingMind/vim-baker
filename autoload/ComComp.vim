@@ -27,6 +27,5 @@ function! ComComp#Complete(cmdline, compfuncs, argseperator)
     endif
 
     let l:CompletionFunction = get(a:compfuncs, l:argcount)
-    let l:completions = call(l:CompletionFunction, [l:arguments, l:arglead])
-    return map(l:completions, 'v:val . a:argseperator')
+    return call(l:CompletionFunction, [l:arguments, l:arglead, a:argseperator])
 endfunction
