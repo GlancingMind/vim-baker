@@ -34,17 +34,23 @@ function! s:CompleteMakefilesAndDirectories(arguments, arglead, argseperator)
 endfunction
 
 function! s:CompleteTarget(arguments, arglead, argseperator)
-    let l:makefile = a:arguments[-1]
+    let l:makefile = a:arguments[0]
     let l:targets = s:GetTargets(l:makefile)
     "remove all targets  that don't match users given argument
-    let l:targets = filter(copy(l:targets), 'v:val =~ a:arglead')
-    return map(l:targets, 'v:val . a:argseperator')
+    let l:targets = filter(l:targets, 'v:val =~ a:arglead')
+    "remove all previous specified targets; the completion should not encourage
+    "user to select the same target multiple times
+    for l:target in a:arguments[1:]
+        call remove(l:targets, index(l:targets, l:target))
+    endfor
+    return map(l:targets, 'v:val.a:argseperator')
 endfunction
 
 function! Baker#Complete(arglead, cmdline, curpos)
     let l:CompMakefile = funcref('s:CompleteMakefilesAndDirectories')
     let l:CompTarget = funcref('s:CompleteTarget')
-    let l:compFuncs = [l:CompMakefile, l:CompTarget]
+    let l:compFuncs = [{'Complete': l:CompMakefile, 'quantifier': 1},
+                \ {'Complete': l:CompTarget, 'quantifier': '*'}]
     let l:completion = ComComp#Complete(a:cmdline, l:compFuncs, ' ')
 
     if empty(l:completion)

@@ -16,16 +16,27 @@ function! s:ExtractArgLead(arguments, argseperator)
     return ''
 endfunction
 
+function! s:CallCompletionFunction(compfuncs, index, args)
+    let l:range = 0
+    for l:compfunc in a:compfuncs
+        let l:quantifier = get(l:compfunc, 'quantifier', 0)
+        if l:quantifier is# '*'
+            return call(l:compfunc.Complete, a:args)
+        endif
+
+        let l:range += str2nr(l:quantifier)
+        if l:range > a:index
+            return call(l:compfunc.Complete, a:args)
+        endif
+    endfor
+    return []
+endfunction
+
 function! ComComp#Complete(cmdline, compfuncs, argseperator)
     let l:arguments = s:GetArguments(a:cmdline, a:argseperator)
     let l:arglead = s:ExtractArgLead(l:arguments, a:argseperator)
     let l:argcount = len(l:arguments)
-    let l:completions = []
 
-    if (l:argcount >= len(a:compfuncs))
-        return l:completions
-    endif
-
-    let l:CompletionFunction = get(a:compfuncs, l:argcount)
-    return call(l:CompletionFunction, [l:arguments, l:arglead, a:argseperator])
+    return s:CallCompletionFunction(a:compfuncs, l:argcount,
+                \ [l:arguments, l:arglead, a:argseperator])
 endfunction
