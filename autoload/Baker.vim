@@ -1,9 +1,3 @@
-function! s:EchoError(msg)
-    echohl ErrorMsg
-    echomsg a:msg
-    echohl None
-endfunction
-
 function! s:GetDirectoryPath(path)
     if isdirectory(a:path)
         return a:path
