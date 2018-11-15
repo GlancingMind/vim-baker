@@ -69,10 +69,11 @@ function! Baker#SetMakeprg(args)
     let l:makefile = resolve(l:arguments[0])
     let l:targets = l:arguments[1:]
 
-    let &makeprg='make -f '.l:makefile.' '.join(l:targets)
+    if !empty(l:targets)
+        echohl MoreMsg
+        echomsg 'Set makeprg to '.&makeprg
+        echohl None
 
-    echohl MoreMsg
-    echomsg 'Set makeprg to '.&makeprg
-    echohl None
+        let &makeprg = 'make -f '.l:makefile.' '.join(l:targets)
+    endif
 endfunction
-
