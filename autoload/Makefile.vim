@@ -6,7 +6,7 @@ let s:makefile = {
 
 function! s:QfEntryToTargets(entry)
     "removes content after :  from target name
-    let l:target = trim(get(split(a:entry, ':', 'KeepEmpty'), 0, ''))
+    let l:target = trim(get(split(a:entry.text, ':', 'KeepEmpty'), 0, ''))
     "split targets up if multiple targetnames are specified before :
     "e.g.   hello world:    => ['hello', 'world']
     return split(l:target)
@@ -27,7 +27,7 @@ function! s:ParseTargets(path)
 
     for l:entry in l:qflist
         "add targets to completionlist
-        let l:targets += s:QfEntryToTargets(l:entry.text)
+        let l:targets += s:QfEntryToTargets(l:entry)
     endfor
 
     return l:targets
