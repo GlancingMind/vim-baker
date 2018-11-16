@@ -13,10 +13,20 @@ function! s:GetTargets(makefile)
     return Makefile#Parse(a:makefile).targets
 endfunction
 
+function! s:GetDirectories(path)
+    return getcompletion(a:path, 'dir')
+endfunction
+
+function! s:GetMakefiles(path)
+    let l:files = getcompletion(a:path, 'file')
+    "filter out makefiles from all files
+    return filter(l:files, 'index(g:Baker_MakefileNames, s:GetFilename(v:val)) >= 0')
+endfunction
+
 function! s:CompleteMakefilesAndDirectories(arguments, arglead, argseperator)
     "when a file is given return this path as only completion
     if filereadable(g:Baker_MakefileLookupPath)
-        return [g:Baker_MakefileLookupPath.' ']
+        return [g:Baker_MakefileLookupPath.a:argseperator]
     endif
 
     let l:path = a:arglead
@@ -24,12 +34,10 @@ function! s:CompleteMakefilesAndDirectories(arguments, arglead, argseperator)
         let l:path = s:GetDirectoryPath(g:Baker_MakefileLookupPath)
     endif
 
-    let l:directories = getcompletion(l:path, 'dir')
-    let l:files = getcompletion(l:path, 'file')
-    "filter out makefiles from all files
-    let l:makefiles = filter(l:files, 'index(g:Baker_MakefileNames, s:GetFilename(v:val)) >= 0')
+    let l:directories = s:GetDirectories(l:path)
+    let l:makefiles = s:GetMakefiles(l:path)
     "add argument seperator to trigger completion of next completion function
-    let l:makefiles = map(l:makefiles, 'v:val.a:argseperator')
+    let l:makefiles =  map(l:makefiles, 'v:val.a:argseperator')
     return l:makefiles + l:directories
 endfunction
 
