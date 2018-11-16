@@ -14,7 +14,7 @@ function! s:GetTargets(makefile)
 endfunction
 
 function! s:GetDirectories(path)
-    return getcompletion(a:path, 'dir')
+    return g:Baker_CompleteDirectories ? getcompletion(a:path, 'dir') : []
 endfunction
 
 function! s:GetMakefiles(path)
