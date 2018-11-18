@@ -15,11 +15,12 @@ endfunction
 function! s:ParseTargets(path)
     "list of targets in makefile
     let l:targets = []
+    let l:targetregex = '\m\C^[A-Za-z0-9][A-Za-z0-9_/. ]\+:\(\s\|$\)'
 
     "store old quickfix entries
     let l:oldqflist = getqflist()
     "grep all targets from makefiles
-    noautocmd silent! execute 'vimgrep /\m\C^[A-Za-z0-9][A-Za-z0-9_/. ]\+:/gj '.a:path
+    noautocmd silent! execute 'vimgrep /'.l:targetregex.'/gj '.a:path
     "get found target entries from quickfixlist
     let l:qflist = getqflist()
     "restore old quickfix entries
