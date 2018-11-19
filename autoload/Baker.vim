@@ -9,18 +9,8 @@ function! s:GetFilename(path)
     return fnamemodify(expand(a:path), ':t')
 endfunction
 
-function! s:GetTargets(makefile)
-    return Makefile#Parse(a:makefile).targets
-endfunction
-
 function! s:GetDirectories(path)
     return g:Baker_CompleteDirectories ? getcompletion(a:path, 'dir') : []
-endfunction
-
-function! s:GetMakefiles(path)
-    let l:files = getcompletion(a:path, 'file')
-    "filter out makefiles from all files
-    return filter(l:files, 'index(g:Baker_MakefileNames, s:GetFilename(v:val)) >= 0')
 endfunction
 
 function! s:CompleteMakefilesAndDirectories(arguments, arglead, argseperator)
@@ -35,15 +25,15 @@ function! s:CompleteMakefilesAndDirectories(arguments, arglead, argseperator)
     endif
 
     let l:directories = s:GetDirectories(l:path)
-    let l:makefiles = s:GetMakefiles(l:path)
+    let l:makefiles = MakefileFinder#Find(l:path)
     "add argument seperator to trigger completion of next completion function
     let l:makefiles =  map(l:makefiles, 'v:val.a:argseperator')
     return l:makefiles + l:directories
 endfunction
 
 function! s:CompleteTarget(arguments, arglead, argseperator)
-    let l:makefile = a:arguments[0]
-    let l:targets = s:GetTargets(l:makefile)
+    let l:makefile = Makefile#Create(a:arguments[0])
+    let l:targets = l:makefile.GetTargets()
     "remove all targets  that don't match users given argument
     let l:targets = filter(l:targets, 'v:val =~ a:arglead')
     "remove all previous specified targets; the completion should not encourage

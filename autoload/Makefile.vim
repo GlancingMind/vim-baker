@@ -1,7 +1,5 @@
 let s:makefile = {
-            \'path': '',
-            \'filename': '',
-            \'targets': []
+            \'path': ''
             \}
 
 function! s:QfEntryToTargets(entry)
@@ -13,6 +11,12 @@ function! s:QfEntryToTargets(entry)
 endfunction
 
 function! s:ParseTargets(path)
+    if !filereadable(a:path)
+        echohl ErrorMsg
+        echomsg string(a:path).' not readable!'
+        echohl None
+    endif
+
     "list of targets in makefile
     let l:targets = []
     let l:targetregex = '\m\C^[A-Za-z0-9][A-Za-z0-9_/. ]\+:\(\s\|$\)'
@@ -34,22 +38,29 @@ function! s:ParseTargets(path)
     return l:targets
 endfunction
 
-function! Makefile#Create(path, targets)
-    let l:self = copy(s:makefile)
-    let l:self.path = fnamemodify(a:path, ':h').'/'
-    let l:self.filename = fnamemodify(a:path, ':t')
-    let l:self.targets = a:targets
+function! s:makefile.GetPath() dict
+    return self.path
+endfunction
 
+function! s:makefile.GetFilename() dict
+    return fnamemodify(self.path, ':t')
+endfunction
+
+function! s:makefile.GetDirectory() dict
+    return fnamemodify(self.path, ':h').'/'
+endfunction
+
+function! s:makefile.GetTargets() dict
+    if !has_key(self, 'targets')
+        "set makefiles targets only, when makefile was parsed
+        let self['targets'] = s:ParseTargets(self.path)
+    endif
+    return self.targets
+endfunction
+
+function! Makefile#Create(path)
+    let l:self = copy(s:makefile)
+    let l:self.path = a:path
     return l:self
 endfunction
 
-function! Makefile#Parse(path)
-    if !filereadable(a:path)
-        echohl ErrorMsg
-        echomsg string(a:path).' not readable!'
-        echohl None
-    endif
-
-    let l:targets = s:ParseTargets(a:path)
-    return Makefile#Create(a:path, l:targets)
-endfunction
