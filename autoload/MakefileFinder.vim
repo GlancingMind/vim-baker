@@ -1,3 +1,6 @@
+function! s:GetFilename(path)
+    return fnamemodify(expand(a:path), ':t')
+endfunction
 
 function! MakefileFinder#Find(path)
     let l:files = getcompletion(a:path, 'file')
