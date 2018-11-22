@@ -1,5 +1,6 @@
 let s:makefile = {
-            \'path': ''
+            \'path': '',
+            \'targets': []
             \}
 
 function! s:QfEntryToTargets(entry)
@@ -51,16 +52,13 @@ function! s:makefile.GetDirectory() dict
 endfunction
 
 function! s:makefile.GetTargets() dict
-    if !has_key(self, 'targets')
-        "set makefiles targets only, when makefile was parsed
-        let self['targets'] = s:ParseTargets(self.path)
-    endif
     return self.targets
 endfunction
 
-function! Makefile#Create(path)
+function! Makefile#Parse(path)
     let l:self = copy(s:makefile)
     let l:self.path = a:path
+    let l:self.targets = s:ParseTargets(a:path)
     return l:self
 endfunction
 

@@ -41,7 +41,7 @@ function! s:CompleteMakefile(arguments, arglead, argseperator)
 endfunction
 
 function! s:CompleteTarget(arguments, arglead, argseperator)
-    let l:makefile = Makefile#Create(a:arguments[0])
+    let l:makefile = Makefile#Parse(a:arguments[0])
     let l:targets = l:makefile.GetTargets()
     "remove all targets  that don't match users given argument
     let l:targets = filter(l:targets, 'v:val =~ a:arglead')
