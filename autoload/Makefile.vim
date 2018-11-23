@@ -56,9 +56,12 @@ function! s:makefile.GetTargets() dict
 endfunction
 
 function! Makefile#Parse(path)
-    let l:self = copy(s:makefile)
-    let l:self.path = a:path
-    let l:self.targets = s:ParseTargets(a:path)
-    return l:self
+    return Makefile#Create(a:path, s:ParseTargets(a:path))
 endfunction
 
+function! Makefile#Create(path, targets)
+    let l:self = copy(s:makefile)
+    let l:self.path = resolve(a:path)
+    let l:self.targets = a:targets
+    return l:self
+endfunction

@@ -26,6 +26,7 @@ function! s:completion.Complete(cmdline, argseperator) dict
     for l:definition in self.definitions
         let l:completions += l:definition.Complete(l:arguments, l:arglead, a:argseperator)
     endfor
+
     return l:completions
 endfunction
 
