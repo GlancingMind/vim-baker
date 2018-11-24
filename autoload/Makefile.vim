@@ -55,6 +55,10 @@ function! s:makefile.GetTargets() dict
     return self.targets
 endfunction
 
+function! s:makefile.SetTargets(targets) dict
+    let self.targets = a:targets
+endfunction
+
 function! Makefile#Parse(path)
     return Makefile#Create(a:path, s:ParseTargets(a:path))
 endfunction

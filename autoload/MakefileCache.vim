@@ -20,12 +20,13 @@ endfunction
 function! MakefileCache#GetByPath(path)
     "TODO: change makefile back to non dict function -> can call
     "Makefile#DirPath and filename
-    let l:path = fnamemodify(a:path, ':h').'/'
-    let l:filename = fnamemodify(a:path, ':t')
-    if has_key(s:cache, l:path)
-        if has_key(s:cache[l:path], l:filename)
-            let l:targets = s:cache[l:path][l:filename]
-            return Makefile#Create(a:path, l:targets)
+    let l:makefile = Makefile#Create(a:path, [])
+    let l:dir = l:makefile.GetDirectory()
+    let l:filename = l:makefile.GetFilename()
+    if has_key(s:cache, l:dir)
+        if has_key(s:cache[l:dir], l:filename)
+            call l:makefile.SetTargets(s:cache[l:dir][l:filename])
+            return l:makefile
         endif
     endif
 
