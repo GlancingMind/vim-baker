@@ -50,10 +50,9 @@ function! s:CompleteTarget(arguments, arglead, argseperator)
     let l:makefile = MakefileCache#GetByPath(a:arguments[0])
     if empty(l:makefile)
         let l:makefile = Makefile#Parse(a:arguments[0])
+        call MakefileCache#Add(l:makefile)
     endif
-    let l:targets = copy(l:makefile.GetTargets())
-    "remove all targets  that don't match users given argument
-    call filter(l:targets, 'v:val =~ a:arglead')
+    let l:targets = l:makefile.GetTargets(a:arglead)
     "remove all previous specified targets; the completion should not encourage
     "user to select the same target multiple times
     for l:target in a:arguments[1:]

@@ -18,9 +18,7 @@ function! MakefileCache#Add(makefile)
 endfunction
 
 function! MakefileCache#GetByPath(path)
-    "TODO: change makefile back to non dict function -> can call
-    "Makefile#DirPath and filename
-    let l:makefile = Makefile#Create(a:path, [])
+    let l:makefile = Makefile#Create(a:path)
     let l:dir = l:makefile.GetDirectory()
     let l:filename = l:makefile.GetFilename()
     if has_key(s:cache, l:dir)

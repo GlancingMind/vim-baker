@@ -51,8 +51,10 @@ function! s:makefile.GetDirectory() dict
     return fnamemodify(self.path, ':h').'/'
 endfunction
 
-function! s:makefile.GetTargets() dict
-    return self.targets
+function! s:makefile.GetTargets(...) dict
+    "remove all targets  that don't match users given argument
+    let l:filter = get(a:, 1, '')
+    return filter(copy(self.targets), 'v:val =~ l:filter')
 endfunction
 
 function! s:makefile.SetTargets(targets) dict
@@ -60,12 +62,13 @@ function! s:makefile.SetTargets(targets) dict
 endfunction
 
 function! Makefile#Parse(path)
-    return Makefile#Create(a:path, s:ParseTargets(a:path))
+    let l:self = Makefile#Create(a:path)
+    call l:self.SetTargets(s:ParseTargets(a:path))
+    return l:self
 endfunction
 
-function! Makefile#Create(path, targets)
+function! Makefile#Create(path)
     let l:self = copy(s:makefile)
     let l:self.path = resolve(a:path)
-    let l:self.targets = a:targets
     return l:self
 endfunction
