@@ -67,8 +67,9 @@ function! Makefile#Parse(path)
     return l:self
 endfunction
 
-function! Makefile#Create(path)
+function! Makefile#Create(path, ...)
     let l:self = copy(s:makefile)
     let l:self.path = resolve(a:path)
+    let l:self.targets = get(a:, 1, [])
     return l:self
 endfunction

@@ -35,15 +35,15 @@ function! s:CompleteMakefile(arguments, arglead, argseperator)
         let l:path = s:GetDirectoryPath(g:Baker_MakefileLookupPath)
     endif
 
-    let l:makefiles = MakefileCache#GetByPath(l:path)
+    let l:makefiles = MakefileCache#GetMakefilesInDirectory(l:path)
     if empty(l:makefiles)
         let l:makefiles = MakefileFinder#Find(l:path)
         for l:makefile in l:makefiles
-            call MakefileCache#Add(Makefile#Parse(l:makefile))
+            call MakefileCache#Add(l:makefile)
         endfor
     endif
     "add argument seperator to trigger completion of next completion function
-    return map(l:makefiles, 'v:val.a:argseperator')
+    return map(l:makefiles, 'v:val.GetPath().a:argseperator')
 endfunction
 
 function! s:CompleteTarget(arguments, arglead, argseperator)
