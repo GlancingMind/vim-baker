@@ -30,11 +30,3 @@ function! MakefileCache#GetByPath(path)
 
     return {}
 endfunction
-
-function! MakefileCache#GetMakefilesInDirectory(directory)
-    let l:makefiles = []
-    for [l:name, l:targets] in items(get(s:cache, a:directory, {}))
-        call add(l:makefiles, Makefile#Create(a:directory.l:name, l:targets))
-    endfor
-    return l:makefiles
-endfunction
