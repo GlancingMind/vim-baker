@@ -1,23 +1,23 @@
-*baker.txt*         Better :make!
+*baker.txt*         Better `:make`!
 
-Select some targets of a makefile via a convenient completion system and :make
+Select some targets of a makefile via a convenient completion system and `:make`
 them.
 
 ================================================================================
 CONTENTS                                                      *Baker-Contents*
 
-                    1.  Usage...............|Baker-Usage|
-                    2.  Commands............|Baker-Commands|
-                    3.  Mappings............|Baker-Mappings|
-                    4.  Settings............|Baker-Settings|
+                    1.  Usage....................|Baker-Usage|
+                    2.  Commands..............|Baker-Commands|
+                    3.  Mappings..............|Baker-Mappings|
+                    4.  Settings..............|Baker-Settings|
                     5.  Good to know........|Baker-GoodToKnow|
                     6.  Contribute..........|Baker-Contribute|
 
 ================================================================================
 USAGE                                                            *Baker-Usage*
 
-Invoke the *:baker* command with the arguments as stated in *:baker*.
-After that, {makeprg} will be set and you can call :make or :baker
+Invoke the `:Baker` command with the arguments as stated in `:Baker`.
+After that, {makeprg} will be set and you can call `:make` or `:Baker`
 without any argument. Unless you have the need to select a different makefile
 or target.
 
@@ -26,15 +26,15 @@ COMMANDS                                                      *Baker-Commands*
 
                                                                       *:Baker*
 :Baker[!]  [args]       Set {makeprg} with targets from given makefile
-                        and run *:make*. [args] are optional. When [args] is
-                        empty :make will be invoked without arguments.
+                        and run `:make`. [args] are optional. When [args] is
+                        empty `:make` will be invoked without arguments.
                         Otherwise [args] must be of below form:
                             {makefile} {target1} {target2} ...
                         {makefile} is the path to a makefile.
                         {target} is a target in the given {makefile}.
                         Selection of makefile and targets will be assited via
                         the completion system.
-                        When [!] is given call :make! instead of :make
+                        When [!] is given call `:make`! instead of `:make`
 
                                                             *:BakerClearCache*
 :BakerClearCache        Empties the makefile cache.
@@ -43,12 +43,12 @@ COMMANDS                                                      *Baker-Commands*
 MAPPINGS                                                      *Baker-Mappings*
 
 There are no mappings in this plugin. But might add your own to your local
-*.vimrc*. I for example use the following:
+|vimrc|. I for example use the following:
                 nnoremap    <c-m>       :Baker <C-L><C-L><C-D>
 
 NOTE: Pressing <c-m> might be the same as pressing <ESC>.
-<C-L> match first entry if only one is present. See *c_CTRL-L* for more info.
-<C-D> show all possible completions. Checkout *c_CTRL-D*.
+<C-L> match first entry if only one is present. See |c_CTRL-L| for more info.
+<C-D> show all possible completions. Checkout |c_CTRL-D|.
 
 ================================================================================
 SETTINGS                                                      *Baker-Settings*
@@ -56,20 +56,21 @@ SETTINGS                                                      *Baker-Settings*
 This plugin will introduce following global variables to alter some behaviour.
 
                                                        *g:Baker_MakefileNames*
-[g:Baker_MakefileNames] is a list of filenames for makefiles, which the
+`g:Baker_MakefileNames` is a list of filenames for makefiles, which the
 completion uses to filter makefiles from unrelated files.
-Default is ['GNUmakefile', 'makefile', 'Makefile']
+Default is ['GNUmakefile', 'makefile', 'Makefile'].~
 
                                                   *g:Baker_MakefileLookupPath*
-{g:Baker_MakefileLookupPath} shall be a path to an existing directory or file.
+`:Baker_MakefileLookupPath` shall be a path to an existing directory or file.
 If it's a directory, the completion will look in this directory to complete
 makefiles. If it's a file, this file will be automaticaly completed.
-Default is './', indicating the current directory.
+Default is './', indicating the current directory.~
 
                                                  *g:Baker_CompleteDirectories*
-{g:Baker_CompleteDirectories} is a boolean and indicates if directories shall
+`:Baker_CompleteDirectories` is a boolean and indicates if directories shall
 be completed by the completion. 0 for no completion. 1 to complete
-directories. Default is 1.
+directories.
+Default is 1.~
 
 ================================================================================
 GOOD TO KNOW                                                *Baker-GoodToKnow*
@@ -81,7 +82,7 @@ The completion must parse the selected makefile to suggest the makefiles
 targets. In order to not parse every makefile over and over again just to
 select a specific target, parsed makefiles will be cached. When targets are
 removed or added to a makefile, which was previously parsed and stored in the
-cache. The cache must be cleared via *:BakerClearCash* to pickup the changes.
+cache. The cache must be cleared via `:BakerClearCash` to pickup the changes.
 
 ================================================================================
 CONTRIBUTE                                                  *Baker-Contribute*
@@ -89,3 +90,5 @@ CONTRIBUTE                                                  *Baker-Contribute*
 Grab the latest version or report a bug on GitHub:
 
 http://github.com/UnintendedSideEffect/vim-baker
+
+vim:tw=78:ts=8:ft=help:norl:
