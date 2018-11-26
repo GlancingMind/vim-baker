@@ -3,15 +3,25 @@
 Select some targets of a makefile and :make via a convenient completion system.
 
 ================================================================================
-CONTENTS                                                    *BakerContents*
+CONTENTS                                                       *BakerContents*
 
-                    1.  Commands............|BakerCommands|
-                    2.  Mappings............|BakerMappings|
+                    1.  Usage...............|BakerUsage|
+                    2.  Commands............|BakerCommands|
+                    3.  Mappings............|BakerMappings|
+                    4.  Settings............|BakerSettings|
 
 ================================================================================
-Commands                                                    *BakerCommands*
+Usage                                                             *BakerUsage*
 
-                                                            *:Baker*
+Invoke the *:baker* command with the arguments as stated in *:baker*.
+After that, {makeprg} will be set and you can call :make or :baker
+without any argument. Unless you have the need to select a different makefile
+or target.
+
+================================================================================
+Commands                                                       *BakerCommands*
+
+                                                                      *:Baker*
 :Baker[!]  [args]       Set {makeprg} with targets from given makefile
                         and run *:make*. [args] are optional. When [args] is
                         empty :make will be invoked without arguments.
@@ -27,7 +37,7 @@ Commands                                                    *BakerCommands*
 :BakerClearCache        Empties the makefile cache.
 
 ================================================================================
-Mappings                                                    *BakerMappings*
+Mappings                                                       *BakerMappings*
 
 There are no mappings in this plugin. But might add your own to your local
 *.vimrc*. I for example use the following:
@@ -37,3 +47,23 @@ NOTE: Pressing <c-m> might be the same as pressing <ESC>.
 <C-L> match first entry if only one is present. See *c_CTRL-L* for more info.
 <C-D> show all possible completions. Checkout *c_CTRL-D*.
 
+================================================================================
+Settings                                                       *BakerSettings*
+
+This plugin will introduce following global variables to alter some behaviour.
+
+                                                       *g:Baker_MakefileNames*
+[g:Baker_MakefileNames] is a list of filenames for makefiles, which the
+completion uses to filter makefiles from unrelated files.
+Default is ['GNUmakefile', 'makefile', 'Makefile']
+
+                                                  *g:Baker_MakefileLookupPath*
+{g:Baker_MakefileLookupPath} shall be a path to an existing directory or file.
+If it's a directory, the completion will look in this directory to complete
+makefiles. If it's a file, this file will be automaticaly completed.
+Default is './', indicating the current directory.
+
+                                                 *g:Baker_CompleteDirectories*
+{g:Baker_CompleteDirectories} is a boolean and indicates if directories shall
+be completed by the completion. 0 for no completion. 1 to complete
+directories. Default is 1.
