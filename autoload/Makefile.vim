@@ -18,10 +18,8 @@ function! s:ParseTargets(path)
         echohl None
     endif
 
-    "list of targets in makefile
-    let l:targets = []
+    "regex for target names
     let l:targetregex = '\m\C^[A-Za-z0-9][A-Za-z0-9_/. ]\+:\(\s\|$\)'
-
     "store old quickfix entries
     let l:oldqflist = getqflist()
     "grep all targets from makefiles
@@ -31,11 +29,8 @@ function! s:ParseTargets(path)
     "restore old quickfix entries
     call setqflist(l:oldqflist)
 
-    for l:entry in l:qflist
-        "add targets to completionlist
-        let l:targets += s:QfEntryToTargets(l:entry)
-    endfor
-
+    let l:targets = []
+    call map(l:qflist, 'extend(l:targets, s:QfEntryToTargets(v:val))')
     return l:targets
 endfunction
 

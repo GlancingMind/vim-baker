@@ -11,8 +11,8 @@ function! s:GetArguments(cmdline, argseperator)
     return split(a:cmdline, a:argseperator, 1)[1:]
 endfunction
 
-function! s:ExtractArgLead(arguments, argseperator)
-    if len(a:arguments) > 0 && !s:IsArgumentComplete(a:arguments[-1], a:argseperator)
+function! s:ExtractArgumentLead(arguments, argseperator)
+    if !empty(a:arguments) && !s:IsArgumentComplete(a:arguments[-1], a:argseperator)
         return remove(a:arguments, -1)
     endif
     return ''
@@ -20,7 +20,7 @@ endfunction
 
 function! s:completion.Complete(cmdline, argseperator) dict
     let l:arguments = s:GetArguments(a:cmdline, a:argseperator)
-    let l:arglead = s:ExtractArgLead(l:arguments, a:argseperator)
+    let l:arglead = s:ExtractArgumentLead(l:arguments, a:argseperator)
 
     let l:completions = []
     for l:definition in self.definitions
