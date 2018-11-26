@@ -23,3 +23,17 @@ Commands                                                    *BakerCommands*
                         the completion system.
                         When [!] is given call :make! instead of :make
 
+                                                            *:BakerClearCache*
+:BakerClearCache        Empties the makefile cache.
+
+================================================================================
+Mappings                                                    *BakerMappings*
+
+There are no mappings in this plugin. But might add your own to your local
+*.vimrc*. I for example use the following:
+                nnoremap    <c-m>       :Baker <C-L><C-L><C-D>
+
+NOTE: Pressing <c-m> might be the same as pressing <ESC>.
+<C-L> match first entry if only one is present. See *c_CTRL-L* for more info.
+<C-D> show all possible completions. Checkout *c_CTRL-D*.
+
