@@ -12,7 +12,7 @@ CONTENTS                                                    *BakerContents*
 Commands                                                    *BakerCommands*
 
                                                             *:Baker*
-:Baker  [args]          Set {makeprg} with targets from given makefile
+:Baker[!]  [args]       Set {makeprg} with targets from given makefile
                         and run *:make*. [args] are optional. When [args] is
                         empty :make will be invoked without arguments.
                         Otherwise [args] must be of below form:
@@ -21,4 +21,5 @@ Commands                                                    *BakerCommands*
                         {target} is a target in the given {makefile}.
                         Selection of makefile and targets will be assited via
                         the completion system.
+                        When [!] is given call :make! instead of :make
 
