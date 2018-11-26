@@ -3,8 +3,10 @@ function! s:InitilizeCompletion()
         return
     endif
     let s:completor = Completion#CreateCompletion()
+    "first argument shall be makefiles and directories
     call s:completor.AddDefinition(funcref('s:CompleteMakefile'), 0, 1)
     call s:completor.AddDefinition(funcref('s:CompleteDirectory'), 0, 1)
+    "second to n arguments will be targets of the makefile given as first arg
     call s:completor.AddDefinition(funcref('s:CompleteTarget'), 1)
 endfunction
 
