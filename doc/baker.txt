@@ -1,6 +1,7 @@
 *baker.txt*         Better :make!
 
-Select some targets of a makefile and :make via a convenient completion system.
+Select some targets of a makefile via a convenient completion system and :make
+them.
 
 ================================================================================
 CONTENTS                                                      *Baker-Contents*
@@ -13,7 +14,7 @@ CONTENTS                                                      *Baker-Contents*
                     6.  Contribute..........|Baker-Contribute|
 
 ================================================================================
-Usage                                                            *Baker-Usage*
+USAGE                                                            *Baker-Usage*
 
 Invoke the *:baker* command with the arguments as stated in *:baker*.
 After that, {makeprg} will be set and you can call :make or :baker
@@ -21,7 +22,7 @@ without any argument. Unless you have the need to select a different makefile
 or target.
 
 ================================================================================
-Commands                                                      *Baker-Commands*
+COMMANDS                                                      *Baker-Commands*
 
                                                                       *:Baker*
 :Baker[!]  [args]       Set {makeprg} with targets from given makefile
@@ -39,7 +40,7 @@ Commands                                                      *Baker-Commands*
 :BakerClearCache        Empties the makefile cache.
 
 ================================================================================
-Mappings                                                      *Baker-Mappings*
+MAPPINGS                                                      *Baker-Mappings*
 
 There are no mappings in this plugin. But might add your own to your local
 *.vimrc*. I for example use the following:
@@ -50,7 +51,7 @@ NOTE: Pressing <c-m> might be the same as pressing <ESC>.
 <C-D> show all possible completions. Checkout *c_CTRL-D*.
 
 ================================================================================
-Settings                                                      *Baker-Settings*
+SETTINGS                                                      *Baker-Settings*
 
 This plugin will introduce following global variables to alter some behaviour.
 
@@ -71,7 +72,7 @@ be completed by the completion. 0 for no completion. 1 to complete
 directories. Default is 1.
 
 ================================================================================
-Good to know                                                *Baker-GoodToKnow*
+GOOD TO KNOW                                                *Baker-GoodToKnow*
 
 The Cache
 ---------
@@ -83,7 +84,7 @@ removed or added to a makefile, which was previously parsed and stored in the
 cache. The cache must be cleared via *:BakerClearCash* to pickup the changes.
 
 ================================================================================
-Contribute                                                  *Baker-Contribute*
+CONTRIBUTE                                                  *Baker-Contribute*
 
 Grab the latest version or report a bug on GitHub:
 

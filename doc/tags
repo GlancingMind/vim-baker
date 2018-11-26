@@ -1,0 +1,16 @@
+:Baker	baker.txt	/*:Baker*
+:BakerClearCache	baker.txt	/*:BakerClearCache*
+:BakerClearCash	baker.txt	/*:BakerClearCash*
+:baker	baker.txt	/*:baker*
+Baker-Commands	baker.txt	/*Baker-Commands*
+Baker-Contents	baker.txt	/*Baker-Contents*
+Baker-Contribute	baker.txt	/*Baker-Contribute*
+Baker-GoodToKnow	baker.txt	/*Baker-GoodToKnow*
+Baker-Mappings	baker.txt	/*Baker-Mappings*
+Baker-Settings	baker.txt	/*Baker-Settings*
+Baker-Usage	baker.txt	/*Baker-Usage*
+baker.txt	baker.txt	/*baker.txt*
+c_CTRL-L	baker.txt	/*c_CTRL-L*
+g:Baker_CompleteDirectories	baker.txt	/*g:Baker_CompleteDirectories*
+g:Baker_MakefileLookupPath	baker.txt	/*g:Baker_MakefileLookupPath*
+g:Baker_MakefileNames	baker.txt	/*g:Baker_MakefileNames*
