@@ -1,0 +1,24 @@
+*baker.txt*         :make done right
+
+Select some targets of a makefile and :make via a convenient completion system.
+
+================================================================================
+CONTENTS                                                    *BakerContents*
+
+                    1.  Commands............|BakerCommands|
+                    2.  Mappings............|BakerMappings|
+
+================================================================================
+Commands                                                    *BakerCommands*
+
+                                                            *:Baker*
+:Baker  [args]          Set {makeprg} with targets from given makefile
+                        and run *:make*. [args] are optional. When [args] is
+                        empty :make will be invoked without arguments.
+                        Otherwise [args] must be of below form:
+                            {makefile} {target1} {target2} ...
+                        {makefile} is the path to a makefile.
+                        {target} is a target in the given {makefile}.
+                        Selection of makefile and targets will be assited via
+                        the completion system.
+
