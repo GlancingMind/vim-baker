@@ -1,4 +1,5 @@
 *baker.txt*         Better `:make`!
+*baker*
 
 Select some targets of a makefile via a convenient completion system and `:make`
 them.
