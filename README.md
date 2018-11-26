@@ -16,7 +16,8 @@ these targets all over again, when I have to use `:make`.
 
 Use your favorite plugin manager.
 
-[Using vim-plug](https://github.com/junegunn/vim-plug)
+Using [vim-plug](https://github.com/junegunn/vim-plug)
+
     Plug 'UnintendedSideEffect/vim-baker'
 
 ## Getting Help
