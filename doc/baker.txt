@@ -3,17 +3,17 @@
 Select some targets of a makefile and :make via a convenient completion system.
 
 ================================================================================
-CONTENTS                                                       *BakerContents*
+CONTENTS                                                      *Baker-Contents*
 
-                    1.  Usage...............|BakerUsage|
-                    2.  Commands............|BakerCommands|
-                    3.  Mappings............|BakerMappings|
-                    4.  Settings............|BakerSettings|
-                    5.  Good to know........|BakerGoodToKnow|
-                    6.  Contribute..........|BakerContribute|
+                    1.  Usage...............|Baker-Usage|
+                    2.  Commands............|Baker-Commands|
+                    3.  Mappings............|Baker-Mappings|
+                    4.  Settings............|Baker-Settings|
+                    5.  Good to know........|Baker-GoodToKnow|
+                    6.  Contribute..........|Baker-Contribute|
 
 ================================================================================
-Usage                                                             *BakerUsage*
+Usage                                                            *Baker-Usage*
 
 Invoke the *:baker* command with the arguments as stated in *:baker*.
 After that, {makeprg} will be set and you can call :make or :baker
@@ -21,7 +21,7 @@ without any argument. Unless you have the need to select a different makefile
 or target.
 
 ================================================================================
-Commands                                                       *BakerCommands*
+Commands                                                      *Baker-Commands*
 
                                                                       *:Baker*
 :Baker[!]  [args]       Set {makeprg} with targets from given makefile
@@ -39,7 +39,7 @@ Commands                                                       *BakerCommands*
 :BakerClearCache        Empties the makefile cache.
 
 ================================================================================
-Mappings                                                       *BakerMappings*
+Mappings                                                      *Baker-Mappings*
 
 There are no mappings in this plugin. But might add your own to your local
 *.vimrc*. I for example use the following:
@@ -50,7 +50,7 @@ NOTE: Pressing <c-m> might be the same as pressing <ESC>.
 <C-D> show all possible completions. Checkout *c_CTRL-D*.
 
 ================================================================================
-Settings                                                       *BakerSettings*
+Settings                                                      *Baker-Settings*
 
 This plugin will introduce following global variables to alter some behaviour.
 
@@ -71,7 +71,7 @@ be completed by the completion. 0 for no completion. 1 to complete
 directories. Default is 1.
 
 ================================================================================
-Good to know                                                 *BakerGoodToKnow*
+Good to know                                                *Baker-GoodToKnow*
 
 The Cache
 ---------
@@ -83,5 +83,8 @@ removed or added to a makefile, which was previously parsed and stored in the
 cache. The cache must be cleared via *:BakerClearCash* to pickup the changes.
 
 ================================================================================
+Contribute                                                  *Baker-Contribute*
 
+Grab the latest version or report a bug on GitHub:
 
+http://github.com/UnintendedSideEffect/vim-baker
