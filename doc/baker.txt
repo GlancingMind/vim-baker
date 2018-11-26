@@ -1,4 +1,4 @@
-*baker.txt*         :make done right
+*baker.txt*         Better :make!
 
 Select some targets of a makefile and :make via a convenient completion system.
 
@@ -9,6 +9,8 @@ CONTENTS                                                       *BakerContents*
                     2.  Commands............|BakerCommands|
                     3.  Mappings............|BakerMappings|
                     4.  Settings............|BakerSettings|
+                    5.  Good to know........|BakerGoodToKnow|
+                    6.  Contribute..........|BakerContribute|
 
 ================================================================================
 Usage                                                             *BakerUsage*
@@ -67,3 +69,19 @@ Default is './', indicating the current directory.
 {g:Baker_CompleteDirectories} is a boolean and indicates if directories shall
 be completed by the completion. 0 for no completion. 1 to complete
 directories. Default is 1.
+
+================================================================================
+Good to know                                                 *BakerGoodToKnow*
+
+The Cache
+---------
+
+The completion must parse the selected makefile to suggest the makefiles
+targets. In order to not parse every makefile over and over again just to
+select a specific target, parsed makefiles will be cached. When targets are
+removed or added to a makefile, which was previously parsed and stored in the
+cache. The cache must be cleared via *:BakerClearCash* to pickup the changes.
+
+================================================================================
+
+
