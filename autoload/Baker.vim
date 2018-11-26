@@ -8,17 +8,10 @@ function! s:InitilizeCompletion()
     call s:completor.AddDefinition(funcref('s:CompleteTarget'), 1)
 endfunction
 
-function! s:GetDirectoryPath(path)
-    if isdirectory(a:path)
-        return a:path
-    endif
-    return fnamemodify(expand(a:path), ':~:.:h').'/'
-endfunction
-
 function! s:CompleteDirectory(arguments, arglead, argseperator)
     let l:path = a:arglead
     if empty(a:arglead)
-        let l:path = s:GetDirectoryPath(g:Baker_MakefileLookupPath)
+        let l:path = g:Baker_MakefileLookupPath
     endif
 
     return g:Baker_CompleteDirectories ? getcompletion(l:path, 'dir') : []
@@ -32,7 +25,7 @@ function! s:CompleteMakefile(arguments, arglead, argseperator)
 
     let l:path = a:arglead
     if empty(a:arglead)
-        let l:path = s:GetDirectoryPath(g:Baker_MakefileLookupPath)
+        let l:path = g:Baker_MakefileLookupPath
     endif
 
     let l:makefiles = MakefileFinder#Find(l:path)
