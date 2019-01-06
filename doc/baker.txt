@@ -80,10 +80,9 @@ The Cache
 ---------
 
 The completion must parse the selected makefile to suggest the makefiles
-targets. In order to not parse every makefile over and over again just to
-select a specific target, parsed makefiles will be cached. When targets are
-removed or added to a makefile, which was previously parsed and stored in the
-cache. The cache must be cleared via `:BakerClearCash` to pickup the changes.
+targets. In order to not parse every makefile over and over again, parsed
+makefiles will be cached. When targets in a makefile are removed or added,
+the cache must be cleared via `:BakerClearCash` to pickup the changes.
 
 ================================================================================
 CONTRIBUTE                                                  *Baker-Contribute*
