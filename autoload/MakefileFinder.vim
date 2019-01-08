@@ -1,10 +1,16 @@
 function! s:GetFilename(path)
-    return fnamemodify(expand(a:path), ':t')
+    return fnamemodify(a:path, ':t:r')
+endfunction
+
+function! MakefileFinder#IsMakefile(path)
+    let l:globes = get(g:, 'Baker_MakefileNames')
+    let l:pattern = join(map(copy(l:globes), 'glob2regpat(v:val)'), '\|')
+    return s:GetFilename(a:path) =~ l:pattern
 endfunction
 
 function! MakefileFinder#Find(path)
     let l:files = getcompletion(a:path, 'file')
     "filter out makefiles from all files
-    return filter(l:files, 'index(g:Baker_MakefileNames, s:GetFilename(v:val)) >= 0')
+    return filter(l:files, 'MakefileFinder#IsMakefile(v:val)')
 endfunction
 
