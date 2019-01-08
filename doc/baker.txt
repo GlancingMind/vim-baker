@@ -54,24 +54,38 @@ NOTE: Pressing <c-m> might be the same as pressing <ESC>.
 ================================================================================
 SETTINGS                                                      *Baker-Settings*
 
-This plugin will introduce following global variables to alter some behaviour.
+Variables
+---------
 
-                                                       *g:Baker_MakefileGlobes*
+This plugin introduces following global variables to alter some behaviour.
+
+                                                      *g:Baker_MakefileGlobes*
 `g:Baker_MakefileGlobes` is a list of globes for makefiles, which the plugin
 uses to filter makefiles from unrelated files.
 Default is ['GNUmakefile', 'makefile', 'Makefile'].~
 
                                                   *g:Baker_MakefileLookupPath*
-`:Baker_MakefileLookupPath` shall be a path to an existing directory or file.
+`g:Baker_MakefileLookupPath` shall be a path to an existing directory or file.
 If it's a directory, the completion will look in this directory to complete
 makefiles. If it's a file, this file will be automaticaly completed.
 Default is './', indicating the current directory.~
 
                                                  *g:Baker_CompleteDirectories*
-`:Baker_CompleteDirectories` is a boolean and indicates if directories shall
+`g:Baker_CompleteDirectories` is a boolean and indicates if directories shall
 be completed by the completion. 0 for no completion. 1 to complete
 directories.
 Default is 1.~
+
+Augroup
+-------
+
+This plugin introduces following augroup.
+
+                                           *Baker_UpdateCacheOnMakefileChange*
+`Baker_UpdateCacheOnMakefileChange` reparses a makefile and update the
+corresponding entry in the cache. Can be disabled via
+`:autocmd! Baker_UpdateCacheOnMakefileChange`
+Default is active.~
 
 ================================================================================
 GOOD TO KNOW                                                *Baker-GoodToKnow*
@@ -80,9 +94,9 @@ The Cache
 ---------
 
 The completion must parse the selected makefile to suggest the makefiles
-targets. In order to not parse every makefile over and over again, parsed
+targets. In order to not parse makefiles over and over again, parsed
 makefiles will be cached. When targets in a makefile are removed or added,
-the cache must be cleared via `:BakerClearCash` to pickup the changes.
+the cache might need to be cleared via |:BakerClearCache| to pickup the changes.
 
 ================================================================================
 CONTRIBUTE                                                  *Baker-Contribute*
