@@ -3,7 +3,8 @@ function! s:GetFilename(path)
 endfunction
 
 function! MakefileFinder#IsMakefile(path)
-    let l:globes = get(g:, 'Baker_MakefileNames')
+    let l:globes = get(g:, 'Baker_MakefileGlobes')
+    "construct a regex for each glob pattern and concatenate these with OR-op.
     let l:pattern = join(map(copy(l:globes), 'glob2regpat(v:val)'), '\|')
     return s:GetFilename(a:path) =~ l:pattern
 endfunction

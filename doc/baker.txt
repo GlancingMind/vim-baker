@@ -56,9 +56,9 @@ SETTINGS                                                      *Baker-Settings*
 
 This plugin will introduce following global variables to alter some behaviour.
 
-                                                       *g:Baker_MakefileNames*
-`g:Baker_MakefileNames` is a list of filenames for makefiles, which the
-completion uses to filter makefiles from unrelated files.
+                                                       *g:Baker_MakefileGlobes*
+`g:Baker_MakefileGlobes` is a list of globes for makefiles, which the plugin
+uses to filter makefiles from unrelated files.
 Default is ['GNUmakefile', 'makefile', 'Makefile'].~
 
                                                   *g:Baker_MakefileLookupPath*

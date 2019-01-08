@@ -1,5 +1,5 @@
 
-let g:Baker_MakefileNames = get(g:, 'Baker_MakefileNames',
+let g:Baker_MakefileGlobes = get(g:, 'Baker_MakefileGlobes',
             \['GNUmakefile', 'makefile', 'Makefile'])
 
 let g:Baker_MakefileLookupPath = get(g:, 'Baker_MakefileLookupPath', './')
