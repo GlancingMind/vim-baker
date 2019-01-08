@@ -4,13 +4,12 @@ function! s:UpdateCache(path)
 endfunction
 
 autocmd BufNewFile,BufRead *
-            \   if MakefileFinder#IsMakefile(expand("%"))
+            \    if MakefileFinder#IsMakefile(expand("%"))
             \ |     setfiletype make
-            \ | else
-                    "rerun filetype detecten when a file was previously
-                    "detected as makefile but is now no longer a makefile
+            \ |  else
+            \ |     setfiletype none
             \ |     silent noautocmd filetype detect
-            \ | endif
+            \ |  endif
 
 autocmd FileWritePost,BufWritePost *
             \   if MakefileFinder#IsMakefile(expand("%"))
