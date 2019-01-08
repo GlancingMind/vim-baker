@@ -43,13 +43,15 @@ COMMANDS                                                      *Baker-Commands*
 ================================================================================
 MAPPINGS                                                      *Baker-Mappings*
 
-There are no mappings in this plugin. But might add your own to your local
-|vimrc|. I for example use the following:
+There are no mappings in this plugin. But you might add one to your local
+|vimrc|. I for example use the following maps:
                 nnoremap    <c-m>       :Baker <C-L><C-L><C-D>
 
-NOTE: Pressing <c-m> might be the same as pressing <ESC>.
 <C-L> match first entry if only one is present. See |c_CTRL-L| for more info.
 <C-D> show all possible completions. Checkout |c_CTRL-D|.
+NOTE: Pressing <c-m> might be the same as pressing <CR>.
+NOTE: If you experience some cryptic output after running `:Baker` read
+      the |Baker-GoodToKnow| section.
 
 ================================================================================
 SETTINGS                                                      *Baker-Settings*
@@ -90,13 +92,26 @@ Default is active.~
 ================================================================================
 GOOD TO KNOW                                                *Baker-GoodToKnow*
 
+Garbage, Cryptic or no output after calling :Baker
+--------------------------------------------------
+
+Solution: Use `:Baker!` instead wich prevents Vim from jumping to the first
+error.
+
+Description: Garbage, cryptic or no output might happen when Vim parses the
+output text of `:make` for errors to populate the quickfixlist but either
+can't find or detects some text wrongly as errors. After detecting these
+false positives, Vim tries to jump to the first error. This behaivour stems
+from `:make` which `:Baker` invokes internally.
+
 The Cache
 ---------
 
 The completion must parse the selected makefile to suggest the makefiles
 targets. In order to not parse makefiles over and over again, parsed
 makefiles will be cached. When targets in a makefile are removed or added,
-the cache might need to be cleared via |:BakerClearCache| to pickup the changes.
+the cache might need to be cleared via |:BakerClearCache| to pickup the
+changes.
 
 ================================================================================
 CONTRIBUTE                                                  *Baker-Contribute*
