@@ -45,8 +45,12 @@ function! s:CompleteTarget(arguments, arglead, argseperator)
     "remove all previous specified targets; the completion should not encourage
     "user to select the same target multiple times
     for l:target in a:arguments[1:]
-        call remove(l:targets, index(l:targets, l:target))
+        let l:index = index(l:targets, l:target)
+        if l:index >= 0
+            call remove(l:targets, l:index)
+        endif
     endfor
+
     "add argument seperator to trigger completion of next completion function
     return map(l:targets, 'v:val.a:argseperator')
 endfunction
