@@ -30,3 +30,13 @@ function! MakefileCache#GetByPath(path)
 
     return {}
 endfunction
+
+function! MakefileCache#GetTargets(path, ...)
+    let l:filter = get(a:, 1, '')
+    let l:makefile = MakefileCache#GetByPath(a:path)
+    if !empty(l:makefile)
+        return l:makefile.GetTargets(l:filter)
+    endif
+
+    return []
+endfunction
