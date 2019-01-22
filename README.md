@@ -7,10 +7,10 @@ a new command `:Baker` which set the `makeprg` option and calls `:make`.
 ## Motivation
 
 Imagen you have a makefile with multiple targets e.g. release, test and debug.
-I wanted these targets to be listed as completions when I use the `:make`
-command. So I simple could make a mapping to `:make` and hit tab a few times
-to select my prefered target. This relieves me from remembering and typing
-these targets all over again, when I have to use `:make`.
+I wanted the this targets to be listed as completions for the `:make`
+command. So I could see all available targets, select my prefered ones by hitting
+tab a few times and finally invoke `:make` on them. This relieves me from
+remembering and typing these targets all over again, when I have to use `:make`.
 
 ## Installation
 
@@ -27,6 +27,6 @@ looking for.
 
 ## Contribute
 
-I used some rules from [Google Vimscript Guide](https://google.github.io/styleguide/vimscriptfull.xml) as reference.
+Some rules from [Google Vimscript Guide](https://google.github.io/styleguide/vimscriptfull.xml) were used as reference.
 
-If you find a bug or have ideas for improvment, feel free to open an issue.
+If you find a bug or have ideas for improvement, feel free to open an issue.
