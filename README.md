@@ -6,7 +6,7 @@ a new command `:Baker` which set the `makeprg` option and calls `:make`.
 
 ## Motivation
 
-Imagen you have a makefile with multiple targets e.g. release, test and debug.
+Imagine you have a makefile with multiple targets e.g. release, test and debug.
 I wanted the this targets to be listed as completions for the `:make`
 command. So I could see all available targets, select my prefered ones by hitting
 tab a few times and finally invoke `:make` on them. This relieves me from
