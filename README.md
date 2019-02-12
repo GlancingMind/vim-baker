@@ -1,14 +1,14 @@
 # Baker - Better :make!
 
 Baker is a plugin for the fantastic [vim editor](https://github.com/vim/vim/).
-The Plugin provides a simple build system based on makefiles. It introduces
-a new command `:Baker` which set the `makeprg` option and calls `:make`.
+The Plugin intends to be a simple build system based on makefiles. It
+intoduces a new command `:Baker` which set the `makeprg` option and calls `:make`.
 
 ## Motivation
 
 Imagine you have a makefile with multiple targets e.g. release, test and debug.
-I wanted the this targets to be listed as completions for the `:make`
-command. So I could see all available targets, select my prefered ones by hitting
+I wanted this targets to be listed as completions for the `:make` command.
+So I could see all available targets, select my prefered ones by hitting
 tab a few times and finally invoke `:make` on them. This relieves me from
 remembering and typing these targets all over again, when I have to use `:make`.
 
