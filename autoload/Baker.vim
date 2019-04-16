@@ -1,13 +1,25 @@
-function! s:InitilizeCompletion()
-    if exists('s:completor')
-        return
+function! s:GetMakefileCompletor()
+    if exists('s:MakefileCompletor')
+        return s:MakefileCompletor
     endif
-    let s:completor = Completion#CreateCompletion()
+    let s:MakefileCompletor = Completion#CreateCompletion()
     "first argument shall be makefiles and directories
-    call s:completor.AddDefinition(funcref('s:CompleteMakefile'), 0, 1)
-    call s:completor.AddDefinition(funcref('s:CompleteDirectory'), 0, 1)
+    call s:MakefileCompletor.AddDefinition(funcref('s:CompleteMakefile'), 0, 1)
+    call s:MakefileCompletor.AddDefinition(funcref('s:CompleteDirectory'), 0, 1)
+    return s:MakefileCompletor
+endfunction
+
+function! s:GetMakefileAndTargetCompletor()
+    if exists('s:MfAndTargetCompletor')
+        return s:MfAndTargetCompletor
+    endif
+    let s:MfAndTargetCompletor = Completion#CreateCompletion()
+    "first argument shall be makefiles and directories
+    call s:MfAndTargetCompletor.AddDefinition(funcref('s:CompleteMakefile'), 0, 1)
+    call s:MfAndTargetCompletor.AddDefinition(funcref('s:CompleteDirectory'), 0, 1)
     "second to n arguments will be targets of the makefile given as first arg
-    call s:completor.AddDefinition(funcref('s:CompleteTarget'), 1)
+    call s:MfAndTargetCompletor.AddDefinition(funcref('s:CompleteTarget'), 1)
+    return s:MfAndTargetCompletor
 endfunction
 
 function! s:CompleteDirectory(arguments, arglead, argseperator)
@@ -50,10 +62,17 @@ function! s:CompleteTarget(arguments, arglead, argseperator)
     return map(l:targets, 'v:val.a:argseperator')
 endfunction
 
-function! Baker#Complete(arglead, cmdline, curpos)
-    call s:InitilizeCompletion()
-    let l:completion = s:completor.Complete(a:cmdline, ' ')
+function Baker#CompleteMakefiles(arglead, cmdline, curpos)
+    let l:completion = s:GetMakefileCompletor().Complete(a:cmdline, ' ')
+    if empty(l:completion)
+        echo 'No completion found'
+    endif
 
+    return l:completion
+endfunction
+
+function! Baker#CompleteMakefilesAndTargets(arglead, cmdline, curpos)
+    let l:completion = s:GetMakefileAndTargetCompletor().Complete(a:cmdline, ' ')
     if empty(l:completion)
         echo 'No completion found'
     endif

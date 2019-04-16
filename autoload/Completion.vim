@@ -57,5 +57,5 @@ endfunction
 
 "Returns a new instance of completion object.
 function! Completion#CreateCompletion()
-    return copy(s:completion)
+    return deepcopy(s:completion)
 endfunction

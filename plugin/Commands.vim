@@ -1,4 +1,9 @@
-command! -complete=customlist,Baker#Complete -bang -nargs=* Baker
+command! -complete=customlist,Baker#CompleteMakefilesAndTargets
+            \ -bang -nargs=* Baker
             \ call Baker#SetMakeprg(<q-args>) | make<bang> | redraw!
 
+command! -complete=customlist,Baker#CompleteMakefiles -nargs=1
+            \ BakerEditRecentMakefile edit <args>
+
 command! BakerClearCache call MakefileCache#Clear()
+
