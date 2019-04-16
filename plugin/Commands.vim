@@ -3,7 +3,7 @@ command! -complete=customlist,Baker#CompleteMakefilesAndTargets
             \ call Baker#SetMakeprg(<q-args>) | make<bang> | redraw!
 
 command! -complete=customlist,Baker#CompleteMakefiles -nargs=1
-            \ BakerEditRecentMakefile edit <args>
+            \ BakerEditMakefile edit <args>
 
 command! BakerClearCache call MakefileCache#Clear()
 

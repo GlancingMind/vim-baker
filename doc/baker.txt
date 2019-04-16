@@ -33,12 +33,16 @@ COMMANDS                                                      *Baker-Commands*
                             {makefile} {target1} {target2} ...
                         {makefile} is the path to a makefile.
                         {target} is a target in the given {makefile}.
-                        Selection of makefile and targets will be assited via
+                        Selection of makefile and targets will be assisted by
                         the completion system.
                         When [!] is given call `:make`! instead of `:make`
 
                                                             *:BakerClearCache*
 :BakerClearCache        Empties the makefile cache.
+
+                                                            *:BakerEditMakefile*
+:BakerEditMakefile      Edit the selected makefile. The selection will be
+                        assisted by the completion system.
 
 ================================================================================
 MAPPINGS                                                      *Baker-Mappings*
