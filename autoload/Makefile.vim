@@ -19,7 +19,7 @@ function! s:ParseTargets(path)
     endif
 
     "regex for target names
-    let l:targetregex = '\m\C^[A-Za-z0-9][A-Za-z0-9_/. ]\+:\(\s\|$\)'
+    let l:targetregex = '\m\C^[A-Za-z0-9][A-Za-z0-9_/.\- ]\+:\(\s\|$\)'
     "store old quickfix entries
     let l:oldqflist = getqflist()
     "grep all targets from makefiles
