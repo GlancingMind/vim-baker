@@ -31,7 +31,8 @@ function! s:ParseTargets(path)
 
     let l:targets = []
     call map(l:qflist, 'extend(l:targets, s:QfEntryToTargets(v:val))')
-    return l:targets
+    "remove multiple occurences of a target and return
+    return uniq(l:targets)
 endfunction
 
 function! s:makefile.GetPath() dict
