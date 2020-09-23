@@ -19,7 +19,7 @@ Use your favorite plugin manager.
 
 Using [vim-plug](https://github.com/junegunn/vim-plug)
 
-    Plug 'UnintendedSideEffect/vim-baker'
+    Plug 'GlancingMind/vim-baker'
 
 ## Getting Help
 

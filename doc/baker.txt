@@ -122,6 +122,6 @@ CONTRIBUTE                                                  *Baker-Contribute*
 
 Grab the latest version or report a bug on GitHub:
 
-http://github.com/UnintendedSideEffect/vim-baker
+http://github.com/UnhinchedMind/vim-baker
 
 vim:tw=78:ts=8:ft=help:norl:
